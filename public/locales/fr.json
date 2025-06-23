@@ -1,0 +1,48 @@
+{
+  "app": {
+    "name": "Golden Tycoon",
+    "version": "v1.1.1"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "retry": "Réessayer",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "save": "Enregistrer",
+    "back": "Retour",
+    "next": "Suivant",
+    "language": "Langue"
+  },
+  "auth": {
+    "login": "Login",
+    "signup": "Sign Up",
+    "logout": "Logout",
+    "email": "Email",
+    "password": "Password"
+  },
+  "game": {
+    "achievements": "Achievements",
+    "leaderboard": "Leaderboard",
+    "investments": "Investments",
+    "profile": "Profile",
+    "settings": "Settings",
+    "currency": "Currency",
+    "level": "Level",
+    "score": "Score"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "language": "Langue",
+    "selectLanguage": "Sélectionner la langue",
+    "sound": "Sound",
+    "music": "Music",
+    "vibration": "Vibration",
+    "notifications": "Notifications",
+    "theme": "Theme",
+    "dark": "Dark",
+    "light": "Light",
+    "privacy": "Privacy",
+    "consent": "Consent"
+  }
+}

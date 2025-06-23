@@ -1,0 +1,129 @@
+{
+  "app": {
+    "title": "Tycoon Clicker"
+  },
+  "game": {
+    "click": "Click",
+    "clickValue": "Click Value",
+    "currency": "Money",
+    "passive": "Income per second"
+  },
+  "buildings": {
+    "title": "Buildings",
+    "description": "Purchase buildings to generate passive income",
+    "owned": "Owned"
+  },
+  "upgrades": {
+    "title": "Upgrades",
+    "description": "Purchase upgrades to increase your productivity",
+    "purchased": "Purchased Upgrades",
+    "available": "Available Upgrades",
+    "noneAvailable": "No upgrades available yet. Keep earning money!",
+    "owned": "Owned",
+    "effectClickMultiplier": "Click value {{value}}",
+    "effectPassiveMultiplier": "Passive income {{value}}"
+  },
+  "realEstate": {
+    "title": "Real Estate",
+    "description": "Invest in properties to generate long-term wealth",
+    "owned": "Your Properties",
+    "available": "Available Properties",
+    "noneAvailable": "No properties available at the moment",
+    "income": "Income",
+    "appreciation": "Appreciation",
+    "maintenance": "Maintenance"
+  },
+  "vehicles": {
+    "title": "Vehicles",
+    "description": "Purchase vehicles to enhance your status and mobility",
+    "owned": "Your Vehicles",
+    "available": "Available Vehicles",
+    "noneAvailable": "No vehicles available at the moment"
+  },
+  "stocks": {
+    "title": "Stock Market",
+    "description": "Invest in company stocks to grow your wealth",
+    "owned": "Your Portfolio",
+    "available": "Available Stocks",
+    "buy": "Buy",
+    "sell": "Sell",
+    "priceUpdating": "Prices updating in: {{time}}s"
+  },
+  "boosts": {
+    "activateIncomeBoost": "Boost Income (Watch Ad)",
+    "activateClickBoost": "Boost Click Value (Watch Ad)",
+    "incomeBoostActive": "Income Boost: {{time}}",
+    "clickBoostActive": "Click Boost: {{time}}",
+    "incomeBoostActivated": "Income boosted by {{multiplier}}x for {{duration}} minutes!",
+    "clickBoostActivated": "Click value boosted by {{multiplier}}x for {{duration}} minutes!",
+    "incomeBoostEnded": "Income boost has ended",
+    "clickBoostEnded": "Click value boost has ended",
+    "adNotAvailable": "Ad not available, please try again later"
+  },
+  "stats": {
+    "title": "Statistics",
+    "description": "Track your progress",
+    "clicks": "Total Clicks",
+    "totalCurrency": "Total Earned",
+    "currentCurrency": "Current Balance",
+    "passiveIncome": "Passive Income",
+    "clickValue": "Click Value",
+    "buildings": "Buildings Owned",
+    "upgrades": "Upgrades Owned",
+    "playTime": "Play Time",
+    "level": "Level",
+    "achievements": "Achievements",
+    "noAchievements": "No achievements unlocked yet. Keep playing!"
+  },
+  "settings": {
+    "title": "Settings",
+    "preferences": "Preferences",
+    "resetGame": "Reset Game",
+    "help": "Help & Support",
+    "general": "General",
+    "audio": "Audio",
+    "language": "Language",
+    "selectLanguage": "Select language",
+    "darkMode": "Dark Mode",
+    "darkModeDescription": "Enable dark color theme",
+    "lightMode": "Light Mode",
+    "soundEffects": "Sound Effects",
+    "soundEffectsDescription": "Enable sound effects during gameplay",
+    "music": "Background Music",
+    "musicDescription": "Play background music during gameplay",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "confirmReset": "Are you sure you want to reset your progress? This cannot be undone!",
+    "resetSuccess": "Game reset successful!"
+  },
+  "footer": {
+    "termsOfService": "Terms of Service",
+    "privacyPolicy": "Privacy Policy",
+    "github": "GitHub"
+  },
+  "achievements": {
+    "list": [
+      {
+        "id": "clicker_novice",
+        "name": "Hard Worker",
+        "description": "Click 100 times.",
+        "reward": "Small click value boost",
+        "goal": 100
+      },
+      {
+        "id": "tycoon_in_the_making",
+        "name": "Tycoon in the Making",
+        "description": "Earn 1,000,000.",
+        "reward": "Permanent income boost.",
+        "goal": 1000000
+      },
+      {
+        "id": "real_estate_mogul",
+        "name": "Real Estate Mogul",
+        "description": "Own 5 properties.",
+        "reward": "Increased property income",
+        "goal": 5
+      }
+    ]
+  }
+}

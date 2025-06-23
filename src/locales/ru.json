@@ -1,0 +1,82 @@
+{
+  "app": {
+    "title": "Tycoon Clicker"
+  },
+  "game": {
+    "click": "Клик",
+    "clickValue": "Стоимость клика",
+    "currency": "Деньги",
+    "passive": "Доход в секунду"
+  },
+  "buildings": {
+    "title": "Здания",
+    "description": "Покупайте здания для получения пассивного дохода",
+    "owned": "Приобретено"
+  },
+  "upgrades": {
+    "title": "Улучшения",
+    "description": "Покупайте улучшения для повышения производительности",
+    "purchased": "Приобретенные улучшения",
+    "available": "Доступные улучшения",
+    "noneAvailable": "Улучшения пока недоступны. Продолжайте зарабатывать деньги!",
+    "owned": "Куплено",
+    "effectClickMultiplier": "Сила клика {{value}}",
+    "effectPassiveMultiplier": "Пассивный доход {{value}}"
+  },
+  "stats": {
+    "title": "Статистика",
+    "description": "Отслеживайте свой прогресс",
+    "clicks": "Всего кликов",
+    "totalCurrency": "Всего заработано",
+    "currentCurrency": "Текущий баланс",
+    "passiveIncome": "Пассивный доход",
+    "clickValue": "Сила клика",
+    "buildings": "Купленных зданий",
+    "upgrades": "Купленных улучшений",
+    "playTime": "Время игры"
+  },
+  "settings": {
+    "title": "Настройки",
+    "preferences": "Предпочтения",
+    "resetGame": "Сбросить игру",
+    "help": "Помощь и поддержка",
+    "general": "Общие",
+    "audio": "Аудио",
+    "language": "Язык",
+    "selectLanguage": "Выберите язык",
+    "darkMode": "Темная тема",
+    "darkModeDescription": "Включить темную цветовую тему",
+    "lightMode": "Светлая тема",
+    "soundEffects": "Звуковые эффекты",
+    "soundEffectsDescription": "Включить звуковые эффекты во время игры",
+    "music": "Фоновая музыка",
+    "musicDescription": "Проигрывать фоновую музыку во время игры",
+    "mute": "Отключить звук",
+    "unmute": "Включить звук",
+    "confirmReset": "Вы уверены, что хотите сбросить прогресс? Это действие нельзя отменить!",
+    "resetSuccess": "Сброс игры успешно выполнен!"
+  },
+  "footer": {
+    "termsOfService": "Условия использования",
+    "privacyPolicy": "Политика конфиденциальности",
+    "github": "GitHub"
+  },
+  "achievements": {
+    "title": "Достижения",
+    "description": "Выполняйте задания и получайте награды",
+    "list": {
+      "clicker_novice": {
+        "name": "Работяга",
+        "description": "Сделайте 100 кликов"
+      },
+      "builder_apprentice": {
+        "name": "Подмастерье строителя",
+        "description": "Постройте 1 здание"
+      },
+      "investor_beginner": {
+        "name": "Начинающий инвестор",
+        "description": "Заработайте 1000 денег"
+      }
+    }
+  }
+}

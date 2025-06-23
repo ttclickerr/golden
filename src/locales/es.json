@@ -1,0 +1,64 @@
+{
+  "app": {
+    "title": "Tycoon Clicker"
+  },
+  "game": {
+    "click": "Clic",
+    "clickValue": "Valor de Clic",
+    "currency": "Dinero",
+    "passive": "Ingresos por segundo"
+  },
+  "buildings": {
+    "title": "Edificios",
+    "description": "Compra edificios para generar ingresos pasivos",
+    "owned": "Poseído"
+  },
+  "upgrades": {
+    "title": "Mejoras",
+    "description": "Compra mejoras para aumentar tu productividad",
+    "purchased": "Mejoras compradas",
+    "available": "Mejoras disponibles",
+    "noneAvailable": "Aún no hay mejoras disponibles. ¡Sigue ganando dinero!",
+    "owned": "Comprado",
+    "effectClickMultiplier": "Valor de clic {{value}}",
+    "effectPassiveMultiplier": "Ingreso pasivo {{value}}"
+  },
+  "stats": {
+    "title": "Estadísticas",
+    "description": "Sigue tu progreso",
+    "clicks": "Clics totales",
+    "totalCurrency": "Total ganado",
+    "currentCurrency": "Saldo actual",
+    "passiveIncome": "Ingresos pasivos",
+    "clickValue": "Valor de clic",
+    "buildings": "Edificios poseídos",
+    "upgrades": "Mejoras poseídas",
+    "playTime": "Tiempo de juego"
+  },
+  "settings": {
+    "title": "Ajustes",
+    "preferences": "Preferencias",
+    "resetGame": "Reiniciar juego",
+    "help": "Ayuda y soporte",
+    "general": "General",
+    "audio": "Audio",
+    "language": "Idioma",
+    "selectLanguage": "Seleccionar idioma",
+    "darkMode": "Modo oscuro",
+    "darkModeDescription": "Habilitar tema de color oscuro",
+    "lightMode": "Modo claro",
+    "soundEffects": "Efectos de sonido",
+    "soundEffectsDescription": "Habilitar efectos de sonido durante el juego",
+    "music": "Música de fondo",
+    "musicDescription": "Reproducir música de fondo durante el juego",
+    "mute": "Silenciar",
+    "unmute": "Activar sonido",
+    "confirmReset": "¿Estás seguro de que deseas reiniciar tu progreso? ¡Esta acción no se puede deshacer!",
+    "resetSuccess": "¡Juego reiniciado con éxito!"
+  },
+  "footer": {
+    "termsOfService": "Términos de servicio",
+    "privacyPolicy": "Política de privacidad",
+    "github": "GitHub"
+  }
+}

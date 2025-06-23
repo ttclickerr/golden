@@ -1,0 +1,47 @@
+/* Скрытие фиолетовых заголовков */
+.hide-purple-header {
+  display: none !important;
+}
+
+/* Исправление белых экранов при загрузке */
+body {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+/* Предотвращение мерцания при загрузке */
+.no-flash {
+  -webkit-transform: translateZ(0);
+  -moz-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  -o-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Скрытие фиолетовых элементов */
+.purple-header,
+.purple-border,
+[class*="border-purple"] {
+  border-color: rgba(139, 92, 246, 0.1) !important;
+}
+
+/* Улучшение контрастности для текста */
+.text-gray-400 {
+  color: rgba(209, 213, 219, 0.9) !important;
+}
+
+/* Улучшение видимости кнопок */
+button {
+  transition: all 0.2s ease;
+}
+
+/* Исправление проблем с прокруткой */
+html, body {
+  overflow-x: hidden;
+  position: relative;
+  height: 100%;
+}

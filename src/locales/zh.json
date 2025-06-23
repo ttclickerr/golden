@@ -1,0 +1,64 @@
+{
+  "app": {
+    "title": "大亨点击器"
+  },
+  "game": {
+    "click": "点击",
+    "clickValue": "点击价值",
+    "currency": "金钱",
+    "passive": "每秒收入"
+  },
+  "buildings": {
+    "title": "建筑",
+    "description": "购买建筑以产生被动收入",
+    "owned": "已拥有"
+  },
+  "upgrades": {
+    "title": "升级",
+    "description": "购买升级以提高您的生产力",
+    "purchased": "已购买的升级",
+    "available": "可用升级",
+    "noneAvailable": "暂无可用升级。继续赚钱！",
+    "owned": "已拥有",
+    "effectClickMultiplier": "点击值 {{value}}",
+    "effectPassiveMultiplier": "被动收入 {{value}}"
+  },
+  "stats": {
+    "title": "统计",
+    "description": "跟踪您的进度",
+    "clicks": "总点击次数",
+    "totalCurrency": "总收入",
+    "currentCurrency": "当前余额",
+    "passiveIncome": "被动收入",
+    "clickValue": "点击价值",
+    "buildings": "拥有的建筑",
+    "upgrades": "拥有的升级",
+    "playTime": "游戏时间"
+  },
+  "settings": {
+    "title": "设置",
+    "preferences": "偏好",
+    "resetGame": "重置游戏",
+    "help": "帮助与支持",
+    "general": "通用",
+    "audio": "音频",
+    "language": "语言",
+    "selectLanguage": "选择语言",
+    "darkMode": "暗黑模式",
+    "darkModeDescription": "启用暗色主题",
+    "lightMode": "明亮模式",
+    "soundEffects": "音效",
+    "soundEffectsDescription": "在游戏过程中启用音效",
+    "music": "背景音乐",
+    "musicDescription": "在游戏过程中播放背景音乐",
+    "mute": "静音",
+    "unmute": "取消静音",
+    "confirmReset": "您确定要重置您的进度吗？此操作无法撤销！",
+    "resetSuccess": "游戏重置成功！"
+  },
+  "footer": {
+    "termsOfService": "服务条款",
+    "privacyPolicy": "隐私政策",
+    "github": "GitHub"
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "app": {
+    "name": "Golden Tycoon",
+    "version": "v1.1.1"
+  },
+  "common": {
+    "loading": "Naglo-load...",
+    "error": "Error",
+    "retry": "Subukan muli",
+    "cancel": "Kanselahin",
+    "confirm": "Kumpirmahin",
+    "save": "I-save",
+    "back": "Bumalik",
+    "next": "Susunod",
+    "language": "Wika"
+  },
+  "auth": {
+    "login": "Mag-login",
+    "signup": "Mag-sign up",
+    "logout": "Mag-logout",
+    "email": "Email",
+    "password": "Password"
+  },
+  "game": {
+    "achievements": "Mga Tagumpay",
+    "leaderboard": "Leaderboard",
+    "investments": "Mga Pamumuhunan",
+    "profile": "Profile",
+    "settings": "Mga Setting",
+    "currency": "Pera",
+    "level": "Antas",
+    "score": "Iskor"
+  },
+  "settings": {
+    "title": "Mga Setting",
+    "language": "Wika",
+    "selectLanguage": "Pumili ng wika",
+    "sound": "Tunog",
+    "music": "Musika",
+    "vibration": "Pag-vibrate",
+    "notifications": "Mga Abiso",
+    "theme": "Tema",
+    "dark": "Madilim",
+    "light": "Maliwanag",
+    "privacy": "Pagkapribado",
+    "consent": "Pahintulot"
+  }
+}

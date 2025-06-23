@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover" />
+    <title>Golden Tycoon - Investment Clicker Game</title>
+    
+    <!-- Предотвращение белого экрана при загрузке -->
+    <style>
+      body {
+        background-color: #121212;
+        color: #ffffff;
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      }
+      
+      #splash-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(to bottom right, #1a1a2e, #000000);
+        z-index: 9999;
+      }
+      
+      #splash-logo {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 20px;
+        background: linear-gradient(to bottom right, #8a2be2, #4169e1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+      }
+      
+      #splash-title {
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+      }
+      
+      #splash-loading {
+        width: 200px;
+        height: 4px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+        overflow: hidden;
+      }
+      
+      #splash-progress {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(to right, #8a2be2, #4169e1);
+        transition: width 0.3s ease;
+      }
+      
+      #splash-version {
+        margin-top: 15px;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 12px;
+      }
+    </style>
+    
+    <!-- AdMob SDK with client ID -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+    
+    <!-- Adjust SDK -->
+    <script src="https://cdn.adjust.com/adjust-latest.min.js"></script>
+  </head>
+  <body>
+    <!-- Начальная заставка для предотвращения белого экрана -->
+    <div id="splash-screen">
+      <div id="splash-logo">💰</div>
+      <div id="splash-title">Golden Tycoon</div>
+      <div id="splash-loading">
+        <div id="splash-progress"></div>
+      </div>
+      <div id="splash-version">v1.0.1</div>
+    </div>
+    
+    <script>
+      // Анимация прогресса загрузки
+      let progress = 0;
+      const progressBar = document.getElementById('splash-progress');
+      const interval = setInterval(() => {
+        progress += 2;
+        if (progress > 90) {
+          clearInterval(interval);
+        }
+        progressBar.style.width = progress + '%';
+      }, 50);
+      
+      // Скрытие начальной заставки после загрузки React
+      window.addEventListener('load', () => {
+        progressBar.style.width = '100%';
+        setTimeout(() => {
+          const splash = document.getElementById('splash-screen');
+          if (splash) {
+            splash.style.opacity = '0';
+            splash.style.transition = 'opacity 0.5s ease';
+            setTimeout(() => {
+              if (splash.parentNode) {
+                splash.parentNode.removeChild(splash);
+              }
+            }, 500);
+          }
+        }, 500);
+      });
+      
+      // Загрузка версии из build-info.json
+      fetch('/build-info.json')
+        .then(response => response.json())
+        .then(data => {
+          if (data && data.version) {
+            const versionElement = document.getElementById('splash-version');
+            if (versionElement) {
+              versionElement.textContent = 'v' + data.version;
+            }
+          }
+        })
+        .catch(() => {
+          console.log('Could not load version info');
+        });
+    </script>
+    
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

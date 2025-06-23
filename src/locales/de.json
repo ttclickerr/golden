@@ -1,0 +1,64 @@
+{
+  "app": {
+    "title": "Tycoon Clicker"
+  },
+  "game": {
+    "click": "Klicken",
+    "clickValue": "Klickwert",
+    "currency": "Geld",
+    "passive": "Einkommen pro Sekunde"
+  },
+  "buildings": {
+    "title": "Gebäude",
+    "description": "Kaufe Gebäude, um passives Einkommen zu generieren",
+    "owned": "Besitz"
+  },
+  "upgrades": {
+    "title": "Upgrades",
+    "description": "Kaufe Upgrades, um deine Produktivität zu steigern",
+    "purchased": "Gekaufte Upgrades",
+    "available": "Verfügbare Upgrades",
+    "noneAvailable": "Noch keine Upgrades verfügbar. Verdiene weiter Geld!",
+    "owned": "Besitz",
+    "effectClickMultiplier": "Klickwert {{value}}",
+    "effectPassiveMultiplier": "Passives Einkommen {{value}}"
+  },
+  "stats": {
+    "title": "Statistiken",
+    "description": "Verfolge deinen Fortschritt",
+    "clicks": "Gesamtklicks",
+    "totalCurrency": "Gesamt verdient",
+    "currentCurrency": "Aktuelles Guthaben",
+    "passiveIncome": "Passives Einkommen",
+    "clickValue": "Klickwert",
+    "buildings": "Gebäude besessen",
+    "upgrades": "Upgrades besessen",
+    "playTime": "Spielzeit"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "preferences": "Präferenzen",
+    "resetGame": "Spiel zurücksetzen",
+    "help": "Hilfe & Support",
+    "general": "Allgemein",
+    "audio": "Audio",
+    "language": "Sprache",
+    "selectLanguage": "Sprache auswählen",
+    "darkMode": "Dunkler Modus",
+    "darkModeDescription": "Dunkles Farbthema aktivieren",
+    "lightMode": "Heller Modus",
+    "soundEffects": "Soundeffekte",
+    "soundEffectsDescription": "Soundeffekte während des Spiels aktivieren",
+    "music": "Hintergrundmusik",
+    "musicDescription": "Hintergrundmusik während des Spiels abspielen",
+    "mute": "Ton aus",
+    "unmute": "Ton an",
+    "confirmReset": "Bist du sicher, dass du deinen Fortschritt zurücksetzen möchtest? Dies kann nicht rückgängig gemacht werden!",
+    "resetSuccess": "Spielrücksetzung erfolgreich!"
+  },
+  "footer": {
+    "termsOfService": "Nutzungsbedingungen",
+    "privacyPolicy": "Datenschutzrichtlinie",
+    "github": "GitHub"
+  }
+}

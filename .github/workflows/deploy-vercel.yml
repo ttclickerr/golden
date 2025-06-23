@@ -1,0 +1,62 @@
+name: Deploy to Vercel
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./client
+
+      - name: Check outdated dependencies
+        run: npm outdated || true
+        working-directory: ./client
+
+      - name: Audit dependencies
+        run: npm audit --audit-level=moderate || true
+        working-directory: ./client
+
+      - name: Build project
+        run: npm run build
+        working-directory: ./client
+
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: ./client
+          prod: true
+        env:
+          VITE_APPSFLYER_DEV_KEY: ${{ secrets.VITE_APPSFLYER_DEV_KEY }}
+          VITE_IRONSOURCE_APP_KEY: ${{ secrets.VITE_IRONSOURCE_APP_KEY }}
+          VITE_ADMOB_APP_ID: ${{ secrets.VITE_ADMOB_APP_ID }}
+          VITE_ADMOB_BANNER_ID: ${{ secrets.VITE_ADMOB_BANNER_ID }}
+          VITE_ADMOB_INTERSTITIAL_ID: ${{ secrets.VITE_ADMOB_INTERSTITIAL_ID }}
+          VITE_ADMOB_REWARDED_ID: ${{ secrets.VITE_ADMOB_REWARDED_ID }}
+          VITE_APPMETRICA_API_KEY: ${{ secrets.VITE_APPMETRICA_API_KEY }}
+          VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
+          VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
+          VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
+          VITE_IRONSOURCE_BANNER_ID: ${{ secrets.VITE_IRONSOURCE_BANNER_ID }}
+          VITE_IRONSOURCE_REWARDED_ID: ${{ secrets.VITE_IRONSOURCE_REWARDED_ID }}

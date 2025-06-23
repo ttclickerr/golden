@@ -1,0 +1,64 @@
+{
+  "app": {
+    "title": "Tycoon Clicker"
+  },
+  "game": {
+    "click": "Cliquer",
+    "clickValue": "Valeur du clic",
+    "currency": "Argent",
+    "passive": "Revenu par seconde"
+  },
+  "buildings": {
+    "title": "Bâtiments",
+    "description": "Acheter des bâtiments pour générer des revenus passifs",
+    "owned": "Possédé"
+  },
+  "upgrades": {
+    "title": "Améliorations",
+    "description": "Achetez des améliorations pour augmenter votre productivité",
+    "purchased": "Améliorations achetées",
+    "available": "Améliorations disponibles",
+    "noneAvailable": "Aucune amélioration disponible pour le moment. Continuez à gagner de l'argent !",
+    "owned": "Possédé",
+    "effectClickMultiplier": "Valeur de clic {{value}}",
+    "effectPassiveMultiplier": "Revenu passif {{value}}"
+  },
+  "stats": {
+    "title": "Statistiques",
+    "description": "Suivez votre progression",
+    "clicks": "Clics totaux",
+    "totalCurrency": "Total gagné",
+    "currentCurrency": "Solde actuel",
+    "passiveIncome": "Revenu passif",
+    "clickValue": "Valeur du clic",
+    "buildings": "Bâtiments possédés",
+    "upgrades": "Améliorations possédées",
+    "playTime": "Temps de jeu"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "preferences": "Préférences",
+    "resetGame": "Réinitialiser le jeu",
+    "help": "Aide et support",
+    "general": "Général",
+    "audio": "Audio",
+    "language": "Langue",
+    "selectLanguage": "Sélectionner la langue",
+    "darkMode": "Mode sombre",
+    "darkModeDescription": "Activer le thème de couleur sombre",
+    "lightMode": "Mode clair",
+    "soundEffects": "Effets sonores",
+    "soundEffectsDescription": "Activer les effets sonores pendant le jeu",
+    "music": "Musique de fond",
+    "musicDescription": "Jouer de la musique de fond pendant le jeu",
+    "mute": "Muet",
+    "unmute": "Activer le son",
+    "confirmReset": "Êtes-vous sûr de vouloir réinitialiser votre progression ? Cette action ne peut pas être annulée !",
+    "resetSuccess": "Réinitialisation du jeu réussie !"
+  },
+  "footer": {
+    "termsOfService": "Conditions d'utilisation",
+    "privacyPolicy": "Politique de confidentialité",
+    "github": "GitHub"
+  }
+}

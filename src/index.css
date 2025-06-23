@@ -1,0 +1,606 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Cache buster - Portfolio colors updated v2.1 */
+
+:root {
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+  --card: 240 10% 3.9%;
+  --card-foreground: 0 0% 98%;
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --primary: 207 90% 54%;
+  --primary-foreground: 211 100% 99%;
+  --secondary: 240 3.7% 15.9%;
+  --secondary-foreground: 0 0% 98%;
+  --accent: 240 3.7% 15.9%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --ring: 240 4.9% 83.9%;
+  --radius: 0.5rem;
+  
+  /* Tropico Theme Colors */
+  --tropico-dark: 260 60% 9%;
+  --tropico-purple: 260 45% 20%;
+  --tropico-light-purple: 260 35% 45%;
+  --tropico-teal: 170 85% 45%;
+  --tropico-cyan: 188 85% 45%;
+  --tropico-gold: 43 96% 56%;
+}
+
+/* Отступы для хедера */
+.header-with-padding {
+  padding-left: 64px !important;
+  padding-right: 64px !important;
+  margin-left: 32px !important;
+  margin-right: 32px !important;
+  box-sizing: border-box !important;
+}
+
+.dark {
+  --background: 260 60% 9%;
+  --foreground: 0 0% 98%;
+  --muted: 260 45% 15%;
+  --muted-foreground: 240 5% 64.9%;
+  --popover: 260 60% 9%;
+  --popover-foreground: 0 0% 98%;
+  --card: 260 45% 20%;
+  --card-foreground: 0 0% 98%;
+  --border: 260 35% 25%;
+  --input: 260 35% 25%;
+  --primary: 170 85% 45%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 260 35% 25%;
+  --secondary-foreground: 0 0% 98%;
+  --accent: 260 35% 25%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --ring: 240 4.9% 83.9%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-gradient-to-br from-[hsl(var(--tropico-dark))] via-[hsl(var(--tropico-purple))] to-[hsl(var(--tropico-light-purple))] text-foreground min-h-screen;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+@layer utilities {
+  /* Premium Glass Effects */
+  .glass-card {
+    @apply relative;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.15);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+  
+  .premium-card {
+    @apply relative;
+    background: linear-gradient(135deg, rgba(139,69,19,0.1) 0%, rgba(75,0,130,0.1) 50%, rgba(139,69,19,0.1) 100%);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 0 0 40px rgba(147,51,234,0.15), inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+  
+  .premium-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(168,85,247,0.4), rgba(59,130,246,0.4), rgba(168,85,247,0.4));
+    border-radius: inherit;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+  
+  .premium-button {
+    @apply relative overflow-hidden;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.2);
+    transition: all 0.3s ease;
+  }
+  
+  .premium-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    border-color: rgba(255,255,255,0.3);
+  }
+
+  /* Принудительное скрытие при открытых настройках */
+  .settings-overlay-active {
+    overflow: hidden !important;
+  }
+  
+  .settings-overlay-active > * {
+    display: none !important;
+  }
+
+  /* Settings modal styles */
+  .settings-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+  }
+
+  .settings-modal > * {
+    width: 100%;
+    max-width: 340px;
+    max-height: 90vh;
+    background: linear-gradient(135deg, rgba(13, 14, 25, 0.95) 0%, rgba(20, 20, 35, 0.95) 100%);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+  }
+  
+  .settings-modal {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    z-index: 999999 !important;
+    background: linear-gradient(135deg, #1f2937, #111827) !important;
+    display: block !important;
+  }
+  
+  .premium-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+  }
+  
+  .premium-button:hover::before {
+    left: 100%;
+  }
+  
+  .tropico-gradient {
+    background: linear-gradient(135deg, hsl(var(--tropico-teal)), hsl(var(--tropico-cyan)));
+  }
+  
+  .gold-gradient {
+    background: linear-gradient(135deg, hsl(var(--tropico-gold)), #f59e0b, #fbbf24);
+    box-shadow: 0 4px 15px rgba(251,191,36,0.3);
+  }
+  
+  .premium-glow {
+    box-shadow: 0 0 30px rgba(168,85,247,0.3), 0 0 60px rgba(59,130,246,0.2);
+    animation: premiumPulse 3s ease-in-out infinite;
+  }
+  
+  /* Rocket Crash Animations */
+  @keyframes rocketMovingBackground {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 100% 100%; }
+  }
+  
+  @keyframes rocketFlame {
+    0%, 100% { 
+      transform: scaleY(1) scaleX(1);
+      opacity: 0.8;
+    }
+    50% { 
+      transform: scaleY(1.3) scaleX(0.8);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes rocketSmoke {
+    0% { 
+      transform: translateX(0) scale(0.5);
+      opacity: 0.6;
+    }
+    100% { 
+      transform: translateX(-30px) scale(1.2);
+      opacity: 0;
+    }
+  }
+  
+  @keyframes rocketShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-1px); }
+    75% { transform: translateX(1px); }
+  }
+
+  @keyframes premiumPulse {
+    0%, 100% {
+      box-shadow: 0 0 30px rgba(168,85,247,0.3), 0 0 60px rgba(59,130,246,0.2);
+    }
+    50% {
+      box-shadow: 0 0 40px rgba(168,85,247,0.5), 0 0 80px rgba(59,130,246,0.3);
+    }
+  }
+  
+  .click-animation {
+    transition: transform 0.1s ease-in-out;
+  }
+  
+  .click-animation:active {
+    transform: scale(0.95);
+  }
+  
+  .floating-money {
+    animation: floatUp 2s ease-out forwards;
+    pointer-events: none;
+  }
+  
+  @keyframes floatUp {
+    0% {
+      opacity: 1;
+      transform: translateY(0) translateX(-50%);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-100px) translateX(-50%);
+    }
+  }
+  
+  .pulse-glow {
+    animation: pulseGlow 2s infinite;
+  }
+  
+  @keyframes pulseGlow {
+    0%, 100% {
+      box-shadow: 0 0 20px hsla(var(--tropico-teal), 0.3);
+    }
+    50% {
+      box-shadow: 0 0 40px hsla(var(--tropico-teal), 0.6);
+    }
+  }
+
+  .nav-item-active {
+    @apply bg-gradient-to-r from-[hsl(var(--tropico-teal))] to-[hsl(var(--tropico-cyan))] text-white;
+  }
+  
+  /* Premium Navigation Styles */
+  .premium-nav {
+    background: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(30, 27, 75, 0.8));
+    backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 -8px 32px rgba(0,0,0,0.3);
+  }
+  
+  .premium-nav-item {
+    @apply relative transition-all duration-300;
+    background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  
+  .premium-nav-item:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+    border-color: rgba(255,255,255,0.2);
+  }
+  
+  .premium-nav-item.active {
+    background: linear-gradient(135deg, rgba(168,85,247,0.3), rgba(59,130,246,0.3));
+    border-color: rgba(168,85,247,0.5);
+    box-shadow: 0 0 20px rgba(168,85,247,0.3);
+  }
+
+  /* Settings Modal Animation */
+  @keyframes slideUpSettings {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  .animate-slide-up-settings {
+    animation: slideUpSettings 0.3s ease-out forwards;
+  }
+
+  /* Header Collapse Effects */
+  .header-collapsed {
+    @apply transform transition-all duration-500 ease-in-out;
+    max-height: 60px;
+    opacity: 0.9;
+  }
+  
+  .header-expanded {
+    @apply transform transition-all duration-500 ease-in-out;
+    max-height: 200px;
+    opacity: 1;
+  }
+  
+  /* Sticky Footer Styles */
+  .sticky-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    background: linear-gradient(to top, 
+      rgba(15, 23, 42, 0.95), 
+      rgba(30, 41, 59, 0.9)
+    );
+    backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(148, 163, 184, 0.1);
+    padding: 0.75rem;
+    padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+    margin-top: auto;
+    padding-left: env(safe-area-inset-left, 0.75rem);
+    padding-right: env(safe-area-inset-right, 0.75rem);
+  }
+
+  .has-sticky-footer {
+    padding-bottom: calc(var(--footer-height, 5rem) + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* Кольца вокруг кнопки клика */
+  .shadow-glow-teal {
+    box-shadow: 0 0 10px rgba(45, 212, 191, 0.7);
+  }
+  
+  .shadow-glow-indigo {
+    box-shadow: 0 0 10px rgba(129, 140, 248, 0.7);
+  }
+  
+  .shadow-glow-purple {
+    box-shadow: 0 0 10px rgba(168, 85, 247, 0.7);
+  }
+  
+  .shadow-glow-cyan {
+    box-shadow: 0 0 10px rgba(34, 211, 238, 0.7);
+  }
+  
+  @keyframes spin-reverse-slow {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(-360deg); }
+  }
+  
+  @keyframes spin-diagonal-slow {
+    0% { transform: rotate(45deg); }
+    100% { transform: rotate(405deg); }
+  }
+  
+  @keyframes spin-diagonal-reverse-slow {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(-360deg); }
+  }
+  
+  .animate-spin-reverse-slow {
+    animation: spin-reverse-slow 12s linear infinite;
+  }
+  
+  .animate-spin-diagonal-slow {
+    animation: spin-diagonal-slow 15s linear infinite;
+  }
+  
+  .animate-spin-diagonal-reverse-slow {
+    animation: spin-diagonal-reverse-slow 18s linear infinite;
+  }
+  
+  /* Стили для бустеров */
+  .booster-active {
+    @apply bg-gradient-to-br from-green-900/30 to-green-600/20 border-green-500/40;
+  }
+  
+  .progress-bar-booster {
+    @apply h-1.5 rounded-full bg-gradient-to-r from-green-500 to-teal-400;
+  }
+
+  /* Enhanced Click Button Animations */
+  @keyframes spin-slow {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  @keyframes pulse-slow {
+    0%, 100% { 
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% { 
+      transform: scale(1.05);
+      opacity: 0.9;
+    }
+  }
+
+  @keyframes bounce-gentle {
+    0%, 100% { 
+      transform: translateY(0px);
+    }
+    50% { 
+      transform: translateY(-8px);
+    }
+  }
+
+  .animate-bounce-gentle {
+    animation: bounce-gentle 2s ease-in-out infinite;
+  }
+
+  @keyframes float-gentle {
+    0%, 100% { 
+      transform: translate(-50%, -50%) translateY(0px) rotate(0deg);
+    }
+    33% { 
+      transform: translate(-50%, -50%) translateY(-5px) rotate(2deg);
+    }
+    66% { 
+      transform: translate(-50%, -50%) translateY(5px) rotate(-2deg);
+    }
+  }
+
+  .animate-float-gentle {
+    animation: float-gentle 4s ease-in-out infinite;
+  }
+
+  @keyframes ping-slow {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    75%, 100% {
+      transform: scale(2);
+      opacity: 0;
+    }
+  }
+
+  @keyframes bounce-subtle {
+    0%, 20%, 50%, 80%, 100% {
+      transform: translateY(0);
+    }
+    40% {
+      transform: translateY(-5px);
+    }
+    60% {
+      transform: translateY(-3px);
+    }
+  }
+
+  @keyframes float-up {
+    0% {
+      opacity: 1;
+      transform: translate(-50%, -50%) translateY(0px) scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: translate(-50%, -50%) translateY(-30px) scale(1.2);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -50%) translateY(-80px) scale(0.8);
+    }
+  }
+
+  @keyframes float-random {
+    0%, 100% {
+      transform: translateY(0px) translateX(0px);
+      opacity: 0.3;
+    }
+    25% {
+      transform: translateY(-20px) translateX(10px);
+      opacity: 0.7;
+    }
+    50% {
+      transform: translateY(-10px) translateX(-15px);
+      opacity: 0.9;
+    }
+    75% {
+      transform: translateY(-30px) translateX(5px);
+      opacity: 0.5;
+    }
+  }
+
+  .animate-spin-slow {
+    animation: spin-slow 8s linear infinite;
+  }
+
+  .animate-pulse-slow {
+    animation: pulse-slow 3s ease-in-out infinite;
+  }
+
+  .animate-ping-slow {
+    animation: ping-slow 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+
+  .animate-bounce-subtle {
+    animation: bounce-subtle 2s infinite;
+  }
+
+  .animate-float-up {
+    animation: float-up 2.5s ease-out forwards;
+  }
+
+  .animate-float-random {
+    animation: float-random 4s ease-in-out infinite;
+  }
+
+  /* Tech Splash Screen Animations */
+  @keyframes gridMove {
+    0% {
+      transform: translate(0, 0);
+    }
+    100% {
+      transform: translate(40px, 40px);
+    }
+  }
+
+/* Force minimal spacing for mobile layout */
+.mobile-compact {
+  margin: 0 !important;
+  padding: 0 !important;
+  max-width: 100vw !important;
+  box-sizing: border-box !important;
+}
+
+/* Line clamp utilities for text overflow */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Стили для основного контейнера и навигации */
+.main-container {
+  padding-bottom: calc(110px + 2rem); /* Добавляем отступ снизу для контента */
+}
+
+.navigation-fixed {
+  position: fixed;
+  bottom: env(safe-area-inset-bottom, 0);
+  left: env(safe-area-inset-left, 0);
+  right: env(safe-area-inset-right, 0);
+  z-index: 60;
+  padding-bottom: env(safe-area-inset-bottom, 0.75rem);
+}
+
+/* Универсальный стиль для всех модальных окон с поддержкой notch/safe-area */
+.modal-root,
+.settings-modal,
+[data-modal],
+[data-dialog],
+.trading-modal,
+.business-modal {
+  padding-top: env(safe-area-inset-top, 0px) !important;
+  padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+  padding-left: env(safe-area-inset-left, 0px) !important;
+  padding-right: env(safe-area-inset-right, 0px) !important;
+}
+
+

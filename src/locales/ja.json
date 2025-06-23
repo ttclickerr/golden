@@ -1,0 +1,64 @@
+{
+  "app": {
+    "title": "タイクーンクリッカー"
+  },
+  "game": {
+    "click": "クリック",
+    "clickValue": "クリック値",
+    "currency": "お金",
+    "passive": "毎秒の収入"
+  },
+  "buildings": {
+    "title": "建物",
+    "description": "受動的な収入を生み出すために建物を購入する",
+    "owned": "所有"
+  },
+  "upgrades": {
+    "title": "アップグレード",
+    "description": "生産性を向上させるためにアップグレードを購入する",
+    "purchased": "購入したアップグレード",
+    "available": "利用可能なアップグレード",
+    "noneAvailable": "まだ利用可能なアップグレードはありません。お金を稼ぎ続けてください！",
+    "owned": "所有",
+    "effectClickMultiplier": "クリック値 {{value}}",
+    "effectPassiveMultiplier": "受動的収入 {{value}}"
+  },
+  "stats": {
+    "title": "統計",
+    "description": "進捗状況を追跡する",
+    "clicks": "総クリック数",
+    "totalCurrency": "総収入",
+    "currentCurrency": "現在の残高",
+    "passiveIncome": "受動的収入",
+    "clickValue": "クリック値",
+    "buildings": "所有建物",
+    "upgrades": "所有アップグレード",
+    "playTime": "プレイ時間"
+  },
+  "settings": {
+    "title": "設定",
+    "preferences": "環境設定",
+    "resetGame": "ゲームをリセット",
+    "help": "ヘルプとサポート",
+    "general": "一般",
+    "audio": "オーディオ",
+    "language": "言語",
+    "selectLanguage": "言語を選択",
+    "darkMode": "ダークモード",
+    "darkModeDescription": "暗い色のテーマを有効にする",
+    "lightMode": "ライトモード",
+    "soundEffects": "効果音",
+    "soundEffectsDescription": "ゲームプレイ中に効果音を有効にする",
+    "music": "バックグラウンドミュージック",
+    "musicDescription": "ゲームプレイ中にバックグラウンドミュージックを再生する",
+    "mute": "ミュート",
+    "unmute": "ミュート解除",
+    "confirmReset": "本当に進捗状況をリセットしますか？この操作は元に戻せません！",
+    "resetSuccess": "ゲームのリセットに成功しました！"
+  },
+  "footer": {
+    "termsOfService": "利用規約",
+    "privacyPolicy": "プライバシーポリシー",
+    "github": "GitHub"
+  }
+}
