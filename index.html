@@ -7,14 +7,7 @@
     
     <!-- Предотвращение белого экрана при загрузке -->
     <style>
-      body {
-        background-color: #121212;
-        color: #ffffff;
-        margin: 0;
-        padding: 0;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-      }
-      
+      /* Удалены инлайн-стили body, чтобы не конфликтовать с Tailwind */
       #splash-screen {
         position: fixed;
         top: 0;
@@ -28,7 +21,6 @@
         background: linear-gradient(to bottom right, #1a1a2e, #000000);
         z-index: 9999;
       }
-      
       #splash-logo {
         width: 80px;
         height: 80px;
@@ -40,14 +32,12 @@
         justify-content: center;
         font-size: 40px;
       }
-      
       #splash-title {
         color: white;
         font-size: 24px;
         font-weight: bold;
         margin-bottom: 20px;
       }
-      
       #splash-loading {
         width: 200px;
         height: 4px;
@@ -55,14 +45,12 @@
         border-radius: 2px;
         overflow: hidden;
       }
-      
       #splash-progress {
         height: 100%;
         width: 0%;
         background: linear-gradient(to right, #8a2be2, #4169e1);
         transition: width 0.3s ease;
       }
-      
       #splash-version {
         margin-top: 15px;
         color: rgba(255, 255, 255, 0.5);
