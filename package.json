@@ -55,6 +55,7 @@
     "recharts": "^3.0.0",
     "sonner": "^2.0.5",
     "tailwind-merge": "^3.3.1",
+    "tailwindcss": "^3.4.3",
     "vaul": "^1.1.2",
     "wouter": "^3.7.1",
     "zustand": "^5.0.5"
@@ -63,7 +64,6 @@
     "@tailwindcss/postcss": "^4.1.10",
     "@vitejs/plugin-react": "^4.6.0",
     "autoprefixer": "^10.4.21",
-    "tailwindcss": "^4.1.10",
     "terser": "^5.43.1",
     "vite": "^6.3.5"
   }
