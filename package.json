@@ -38,6 +38,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "firebase": "^11.9.1",
+    "framer-motion": "^12.19.1",
     "i18next": "^25.2.1",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.522.0",
