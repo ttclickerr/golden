@@ -87,4 +87,8 @@ export interface GameState {
   quests: Quest[];
   tutorial: Tutorial[];
   tutorialCompleted: boolean;
+  boosterName?: string;
+  totalClicks: number;
+  investmentPurchases: Record<string, { totalShares: number; totalCost: number }>;
+  businesses: Record<string, { owned: boolean; purchaseDate: number; upgrades: string[] }>;
 }

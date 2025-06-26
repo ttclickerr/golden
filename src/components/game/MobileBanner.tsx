@@ -48,16 +48,6 @@ export default function MobileBanner() {
           <div className="px-2 py-1 bg-white/10 rounded text-xs">AdSense</div>
         </div>
       </div>
-      
-      {/* Скрытый AdSense для будущего использования */}
-      <ins 
-        className="adsbygoogle"
-        style={{ display: 'none' }}
-        data-ad-client="ca-pub-4328087894770041"
-        data-ad-slot="5243095999"
-        data-ad-format="auto"
-        data-full-width-responsive="true"
-      />
     </div>
   );
 }

@@ -7,13 +7,6 @@ interface RewardedAdProps {
   onAdFailed?: (error: string) => void;
 }
 
-declare global {
-  interface Window {
-    adsbygoogle: any[];
-    googletag: any;
-  }
-}
-
 export function RewardedAd({ onRewardEarned, onAdClosed, onAdFailed }: RewardedAdProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [adReady, setAdReady] = useState(false);
@@ -26,15 +19,6 @@ export function RewardedAd({ onRewardEarned, onAdClosed, onAdFailed }: RewardedA
       if (!rewardedAdId) {
         console.log('AdMob rewarded ad ID not found');
         return;
-      }
-
-      // Для веб-версии используем AdSense rewarded ads
-      if (!document.querySelector('script[src*="adsbygoogle"]')) {
-        const script = document.createElement('script');
-        script.async = true;
-        script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${import.meta.env.VITE_ADMOB_APP_ID}`;
-        script.crossOrigin = 'anonymous';
-        document.head.appendChild(script);
       }
 
       setAdReady(true);

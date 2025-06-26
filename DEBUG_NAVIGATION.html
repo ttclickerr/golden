@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug NavigationBar</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #111; color: white; }
+        .debug-box { background: #333; padding: 15px; margin: 10px 0; border-radius: 8px; }
+        .nav-test { 
+            position: fixed; 
+            bottom: 120px; 
+            left: 0; 
+            right: 0; 
+            height: 70px; 
+            background: linear-gradient(to right, #f59e0b, #eab308); 
+            border: 3px solid #dc2626;
+            z-index: 999999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .footer-test {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 90px;
+            background: linear-gradient(to right, #1e293b, #0f172a);
+            border: 2px solid purple;
+            z-index: 30;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 NavigationBar Debug Test</h1>
+    
+    <div class="debug-box">
+        <h3>📋 Checklist:</h3>
+        <ul>
+            <li>✅ Navigation должна быть ВЫШЕ футера</li>
+            <li>✅ Navigation z-index: 999999 > Footer z-index: 30</li>
+            <li>✅ Navigation bottom: 120px > Footer bottom: 0px</li>
+            <li>✅ Navigation должна быть желто-красной</li>
+            <li>✅ Footer должен быть серо-фиолетовым</li>
+        </ul>
+    </div>
+
+    <div class="debug-box">
+        <h3>🎯 Что ты должен видеть:</h3>
+        <p><strong style="color: #f59e0b;">ЖЕЛТАЯ полоса с КРАСНОЙ рамкой</strong> - это NavigationBar</p>
+        <p><strong style="color: #9333ea;">СЕРАЯ полоса с ФИОЛЕТОВОЙ рамкой</strong> - это Footer</p>
+        <p>NavigationBar должна быть ВЫШЕ Footer'а!</p>
+    </div>
+
+    <!-- Тестовая навигация -->
+    <div class="nav-test">
+        <div style="color: black; font-weight: bold; font-size: 16px;">
+            🧭 TEST NAVIGATION BAR - ДОЛЖНА БЫТЬ ВИДНА!
+        </div>
+    </div>
+
+    <!-- Тестовый футер -->
+    <div class="footer-test">
+        <div style="color: white; font-weight: bold; font-size: 14px;">
+            📱 TEST FOOTER AD BANNER
+        </div>
+    </div>
+
+    <div class="debug-box">
+        <h3>🔧 Если не видно навигацию:</h3>
+        <ol>
+            <li>Проверь консоль браузера (F12)</li>
+            <li>Найди ошибки JavaScript</li>
+            <li>Проверь, загружается ли компонент</li>
+            <li>Убедись, что React рендерит элемент</li>
+        </ol>
+    </div>
+
+    <script>
+        console.log('🔍 DEBUG: Test page loaded');
+        console.log('📊 Window dimensions:', window.innerWidth, 'x', window.innerHeight);
+        
+        // Проверяем элементы
+        setTimeout(() => {
+            const nav = document.querySelector('.nav-test');
+            const footer = document.querySelector('.footer-test');
+            
+            console.log('🧭 Navigation element:', nav);
+            console.log('📱 Footer element:', footer);
+            
+            if (nav) {
+                const navStyles = window.getComputedStyle(nav);
+                console.log('🎨 Navigation styles:', {
+                    position: navStyles.position,
+                    bottom: navStyles.bottom,
+                    zIndex: navStyles.zIndex,
+                    display: navStyles.display,
+                    visibility: navStyles.visibility
+                });
+            }
+            
+            if (footer) {
+                const footerStyles = window.getComputedStyle(footer);
+                console.log('🎨 Footer styles:', {
+                    position: footerStyles.position,
+                    bottom: footerStyles.bottom,
+                    zIndex: footerStyles.zIndex,
+                    display: footerStyles.display,
+                    visibility: footerStyles.visibility
+                });
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

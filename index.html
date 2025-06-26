@@ -58,12 +58,6 @@
       }
     </style>
     
-    <!-- AdMob SDK with client ID -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
-    
-    <!-- Adjust SDK -->
-    <script src="https://cdn.adjust.com/adjust-latest.min.js"></script>
-    
     <link rel="icon" type="image/png" href="/icons/icon-192x192.png" />
     <link rel="manifest" href="/manifest.json" />
   </head>
@@ -121,6 +115,16 @@
         .catch(() => {
           console.log('Could not load version info');
         });
+      
+      // Удалено подключение рекламы AdSense (adsbygoogle), так как используется только AdMob и IronSource
+      // Подключение Adjust SDK с обработкой ошибок
+      var adjustScript = document.createElement('script');
+      adjustScript.src = 'https://cdn.adjust.com/adjust-latest.min.js';
+      adjustScript.async = true;
+      adjustScript.onerror = function() {
+        console.warn('Adjust SDK failed to load.');
+      };
+      document.head.appendChild(adjustScript);
     </script>
     
     <div id="root"></div>

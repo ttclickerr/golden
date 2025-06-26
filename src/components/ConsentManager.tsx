@@ -125,10 +125,12 @@ export function ConsentManager({ onConsentUpdate, isOpen, onClose }: ConsentMana
     }
   }, [isOpen, consents]);
   
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[99999]" onClick={onClose}>
+    <div
+      className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[99999]"
+      style={{ display: isOpen ? 'flex' : 'none' }}
+      onClick={onClose}
+    >
       <div 
         className="max-w-2xl w-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 border border-purple-500/20 text-white rounded-xl p-6 max-h-[90vh] overflow-y-auto" 
         onClick={e => e.stopPropagation()}

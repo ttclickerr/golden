@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { ASSETS, ACHIEVEMENTS, formatNumber, calculatePrice, calculateIncome } from '@/lib/gameData';
+import { assetNames } from "@/lib/assetNames";
 
 export interface GameState {
   balance: number;
@@ -23,6 +24,7 @@ export interface GameState {
   isPremium: boolean;
   premiumType?: 'weekly' | 'lifetime'; // Тип премиум подписки
   premiumExpiry?: number; // Время истечения недельной подписки (только для weekly)
+  boosterName?: string;
 }
 
 export const INITIAL_STATE: GameState = {
@@ -154,9 +156,17 @@ export function useGameState() {
     
     // Применяем множитель уровня к общему доходу
     total *= levelMultiplier;
-    
-    console.log(`💰 Passive Income: ${incomeDetails.join(', ')} | Total: $${total.toFixed(2)}/sec (LVL ${level || 1} +${((levelMultiplier - 1) * 100).toFixed(0)}%)`);
-    
+
+    // Оптимизация: логировать только при изменении дохода
+    if (typeof window !== 'undefined') {
+      const w = window as any;
+      if (!w._lastPassiveIncomeLog || w._lastPassiveIncomeValue !== total) {
+        console.log(`💰 Passive Income: ${incomeDetails.join(', ')} | Total: $${total.toFixed(2)}/sec (LVL ${level || 1} +${((levelMultiplier - 1) * 100).toFixed(0)}%)`);
+        w._lastPassiveIncomeLog = Date.now();
+        w._lastPassiveIncomeValue = total;
+      }
+    }
+
     return total;
   }, []);
 
@@ -178,7 +188,10 @@ export function useGameState() {
           ...prev, 
           ...parsed, 
           balance: correctedBalance,
-          passiveIncome: correctedPassiveIncome 
+          passiveIncome: correctedPassiveIncome,
+          totalClicks: prev.totalClicks || 0,
+          investmentPurchases: prev.investmentPurchases || {},
+          businesses: prev.businesses || {}
         }));
       } catch (error) {
         console.error('❌ Ошибка загрузки игрового состояния:', error);
@@ -188,8 +201,23 @@ export function useGameState() {
 
   // Save game state to localStorage and Firebase
   const saveGameState = useCallback(async (state: GameState) => {
-    console.log('💾 Сохранение игрового состояния:', { balance: state.balance, investments: state.investments });
-    console.log('🔍 Полное состояние для сохранения:', JSON.stringify(state.investments));
+    console.log('Сохранение игрового состояния:', {
+      balance: Number(state.balance.toFixed(1)),
+      investments: { ...state.investments },
+      businesses: { ...state.businesses },
+      activeBoosters: { ...state.activeBoosters },
+      rewardCooldowns: { ...state.rewardCooldowns },
+      level: state.level,
+      xp: state.xp,
+      maxXp: state.maxXp,
+      clickValue: state.clickValue,
+      passiveIncome: state.passiveIncome,
+      totalClicks: state.totalClicks,
+      achievements: state.achievements,
+      isPremium: state.isPremium,
+      premiumType: state.premiumType,
+      premiumExpiry: state.premiumExpiry
+    });
     localStorage.setItem('tycoon-clicker-save', JSON.stringify(state));
     
     // Синхронизация с Firebase для авторизованных пользователей
@@ -743,26 +771,6 @@ export function useGameState() {
         
         // Получаем название актива
         const getAssetName = (id: string): string => {
-          const assetNames: Record<string, string> = {
-            'apple': 'Tiple Technologies',
-            'tesla': 'Desla Motors',
-            'btc-separate': 'Bitcoin',
-            'eth-separate': 'Ethereum',
-            'msft': 'Microsys Corp',
-            'googl': 'Foogle Inc',
-            'amzn': 'Amazom LLC',
-            'nvda': 'Mvidia Corp',
-            'jpm': 'KP Morgan Bank',
-            'brk': 'Berkshite Holdings',
-            'ko': 'Coca-Cola',
-            'pg': 'Procter & Gambie',
-            'jnj': 'Johnson & Johnsen',
-            'oil': 'Crude Oil',
-            'gold': 'Gold',
-            'silver': 'Silver',
-            'platinum': 'Platinum',
-            'uranium': 'Uranium'
-          };
           return assetNames[id] || id;
         };
         

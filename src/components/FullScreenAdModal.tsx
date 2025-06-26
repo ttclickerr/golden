@@ -1,12 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { trackAnalyticsEvent } from '../lib/trackAnalyticsEvent';
-
-declare global {
-  interface Window {
-    adsbygoogle?: any[];
-  }
-}
+import { useAuth } from '@/hooks/useAuth';
 
 interface FullScreenAdModalProps {
   isOpen: boolean;
@@ -15,6 +10,7 @@ interface FullScreenAdModalProps {
 }
 
 export function FullScreenAdModal({ isOpen, onComplete, rewardType }: FullScreenAdModalProps) {
+  const { user } = useAuth();
   const [countdown, setCountdown] = useState(30); // Было 3, теперь 30 секунд
   const [phase, setPhase] = useState<'loading' | 'ad' | 'completing'>('loading');
   const [isPremium, setIsPremium] = useState(() => {
@@ -42,7 +38,7 @@ export function FullScreenAdModal({ isOpen, onComplete, rewardType }: FullScreen
       return;
     }
     // Логируем показ полноэкранной рекламы
-    const userId = localStorage.getItem('user_id') || 'anonymous';
+    const userId = user?.uid || 'anonymous';
     trackAnalyticsEvent({ event: 'fullscreen_ad_shown', adType: 'fullscreen', provider: 'admob', userId, rewardType });
 
     // Фаза загрузки (1 секунда)
@@ -51,19 +47,10 @@ export function FullScreenAdModal({ isOpen, onComplete, rewardType }: FullScreen
     }, 1000);
 
     return () => clearTimeout(loadingTimer);
-  }, [isOpen]);
+  }, [isOpen, user?.uid, rewardType]);
 
   useEffect(() => {
     if (phase !== 'ad') return;
-
-    // Инициализируем AdSense для полноэкранной рекламы
-    if (window.adsbygoogle) {
-      try {
-        (window.adsbygoogle as any[]).push({});
-      } catch (e) {
-        console.warn('AdSense не загружен:', e);
-      }
-    }
 
     if (countdown > 0) {
       const timer = setTimeout(() => {

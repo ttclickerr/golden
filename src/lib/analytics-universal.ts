@@ -66,6 +66,7 @@ export const AnalyticsEvents = {
   APP_CLOSE: 'app_close',
   PURCHASE: 'purchase',
   PREMIUM_PURCHASED: 'premium_purchased',
+  PREMIUM_PURCHASE_STARTED: 'premium_purchase_started',
   REMOVE_ADS: 'remove_ads',
   AD_WATCHED: 'ad_watched',
   AD_CLICKED: 'ad_clicked',

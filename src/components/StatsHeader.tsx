@@ -3,15 +3,15 @@ import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Volume2, Moon, Settings, History } from "lucide-react";
 import { GameState } from "@/hooks/useGameState";
+import { ExtendedGameState } from "@/types/commonTypes";
 import { formatNumber, ACHIEVEMENTS } from "@/lib/gameData";
-import { SettingsModal } from "@/components/SettingsModalNew";
 import { TransactionHistory, type Transaction, useTransactionHistory } from "@/components/TransactionHistory";
 import { useTranslation } from "@/lib/i18n";
 import { useLocation } from "wouter";
 import { GameClock } from "@/components/GameClock";
 
 // Generate static transaction history based on game state
-function generateRecentTransactions(gameState: GameState): Transaction[] {
+function generateRecentTransactions(gameState: ExtendedGameState): Transaction[] {
   const transactions: Transaction[] = [];
   const baseTime = Date.now();
   
@@ -59,7 +59,7 @@ function generateRecentTransactions(gameState: GameState): Transaction[] {
 }
 
 interface StatsHeaderProps {
-  gameState: GameState;
+  gameState: ExtendedGameState;
   realPassiveIncome?: number;
   onSettingsClick?: () => void;
   isCollapsed?: boolean;
@@ -73,7 +73,6 @@ export function StatsHeader({ gameState, realPassiveIncome, onSettingsClick, isC
   const [, setLocation] = useLocation();
   const [moneyAnimation, setMoneyAnimation] = useState<string | null>(null);
   const [historyOpen, setHistoryOpen] = useState(false);
-  const [settingsOpen, setSettingsOpen] = useState(false);
   const prevBalance = useRef(gameState.balance);
   const [clicksPerMinute, setClicksPerMinute] = useState(0);
   const clickTimestamps = useRef<number[]>([]);
@@ -82,7 +81,8 @@ export function StatsHeader({ gameState, realPassiveIncome, onSettingsClick, isC
   const displayTransactions = transactions || [];
   
   // Вычисляем прогресс XP
-  const xpProgress = gameState.maxXp > 0 ? Math.min((gameState.xp / gameState.maxXp) * 100, 100) : 0;
+  const xpProgress = (gameState.maxXp && gameState.maxXp > 0) ? 
+    Math.min(((gameState.xp || 0) / gameState.maxXp) * 100, 100) : 0;
   
   // Анимация добавления денег
   useEffect(() => {
@@ -134,7 +134,7 @@ export function StatsHeader({ gameState, realPassiveIncome, onSettingsClick, isC
           const speedAchievements = ACHIEVEMENTS.filter(a => a.type === 'click_speed');
           speedAchievements.forEach(achievement => {
             if (clicksPerMinuteCalc >= achievement.requirement && 
-                !gameState.achievements.includes(achievement.id)) {
+                !(gameState.achievements || []).includes(achievement.id)) {
               // Вызываем функцию разблокировки достижения
               if (onAchievementUnlock) {
                 onAchievementUnlock(achievement.id);
@@ -256,11 +256,11 @@ export function StatsHeader({ gameState, realPassiveIncome, onSettingsClick, isC
                   {/* WIZA в правом верхнем углу на уровне слова "Баланс" */}
                   <div className="absolute top-0 right-0">
                     <div className="text-right">
-                      <div className="text-lg font-black tracking-wider bg-gradient-to-r from-blue-400 via-purple-400 to-blue-600 bg-clip-text text-transparent drop-shadow-lg" 
-                           style={{fontFamily: 'Arial Black, sans-serif', letterSpacing: '1px'}}>
+                      <div className="font-bold tracking-wider bg-gradient-to-r from-blue-400 via-purple-400 to-blue-600 bg-clip-text text-transparent drop-shadow-lg"
+                           style={{fontFamily: 'Arial Black, sans-serif', letterSpacing: '1px', fontSize: '1.5rem'}}>
                         WIZA
                       </div>
-                      <div className="text-[6px] font-bold text-gray-400 tracking-wide -mt-1" style={{letterSpacing: '1px'}}>
+                      <div className="text-xs font-extrabold text-yellow-400 tracking-wide -mt-1 uppercase" style={{letterSpacing: '1.5px'}}>
                         PREMIUM
                       </div>
                     </div>
@@ -431,7 +431,7 @@ export function StatsHeader({ gameState, realPassiveIncome, onSettingsClick, isC
                       LVL {gameState.level}
                     </div>
                     <span className="text-xs text-gray-500">
-                      {formatNumber(gameState.xp)} / {formatNumber(gameState.maxXp)} XP
+                      {formatNumber(gameState.xp || 0)} / {formatNumber(gameState.maxXp || 0)} XP
                     </span>
                   </div>
                   
@@ -471,12 +471,6 @@ export function StatsHeader({ gameState, realPassiveIncome, onSettingsClick, isC
         isOpen={historyOpen}
         onClose={() => setHistoryOpen(false)}
         transactions={displayTransactions}
-      />
-      
-      {/* Settings Modal */}
-      <SettingsModal 
-        isOpen={settingsOpen}
-        onClose={() => setSettingsOpen(false)}
       />
     </header>
   );

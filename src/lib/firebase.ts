@@ -1,14 +1,14 @@
-import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithRedirect, signOut, onAuthStateChanged } from "firebase/auth";
+import { initializeApp, getApps, getApp } from "firebase/app";
+import { getAuth, GoogleAuthProvider, signInWithRedirect, signOut, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, OAuthProvider } from "firebase/auth";
 import { getFirestore, doc, setDoc, getDoc, collection, addDoc } from "firebase/firestore";
 
 // Firebase конфигурация
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: `${import.meta.env.VITE_FIREBASE_PROJECT_ID}.firebaseapp.com`,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: `${import.meta.env.VITE_FIREBASE_PROJECT_ID}.firebasestorage.app`,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyDSv2HCSQKCklKrcQm1DHjz-geFFG9S7bs",
+  authDomain: `${import.meta.env.VITE_FIREBASE_PROJECT_ID || "tycoon-clicker-ca2ac"}.firebaseapp.com`,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "tycoon-clicker-ca2ac",
+  storageBucket: `${import.meta.env.VITE_FIREBASE_PROJECT_ID || "tycoon-clicker-ca2ac"}.appspot.com`,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:809250963923:web:1fad78ae66acec410b6f26",
 };
 
 // Инициализация Firebase
@@ -17,61 +17,75 @@ let auth: any = null;
 let db: any = null;
 
 export const initializeFirebase = () => {
-  try {
-    // Проверяем, не инициализирован ли уже Firebase
-    if (app && auth && db) {
-      console.log('🔥 Firebase уже инициализирован');
-      return true;
+  if (!app) {
+    if (!getApps().length) {
+      app = initializeApp(firebaseConfig);
+    } else {
+      app = getApp();
     }
-
-    app = initializeApp(firebaseConfig);
     auth = getAuth(app);
     db = getFirestore(app);
-    
-    console.log('🔥 Firebase успешно инициализирован:', {
-      projectId: firebaseConfig.projectId,
-      authDomain: firebaseConfig.authDomain
-    });
-    
-    return true;
-  } catch (error: any) {
-    // Если приложение уже существует, просто используем его
-    if (error.code === 'app/duplicate-app') {
-      console.log('🔥 Firebase приложение уже существует, используем его');
-      return true;
-    }
-    console.error('❌ Ошибка инициализации Firebase:', error);
-    return false;
+    console.log('🔥 Firebase app initialized successfully');
   }
+  return true;
+};
+
+export const getFirebaseAuth = () => {
+  if (!auth) initializeFirebase();
+  return auth;
+};
+export const getFirebaseApp = () => {
+  if (!app) initializeFirebase();
+  return app;
 };
 
 // Google аутентификация
 export const signInWithGoogle = async () => {
-  console.log('🔐 Попытка входа через Google...');
-  console.log('🔍 Firebase состояние:', { auth: !!auth, app: !!app });
-  console.log('🔍 Переменные окружения:', {
-    apiKey: !!import.meta.env.VITE_FIREBASE_API_KEY,
-    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-    appId: import.meta.env.VITE_FIREBASE_APP_ID
-  });
-  
+  initializeFirebase();
+  const auth = getFirebaseAuth();
   if (!auth) {
     console.warn('❌ Firebase не инициализирован');
     return null;
   }
-  
   try {
     const provider = new GoogleAuthProvider();
     provider.addScope('email');
     provider.addScope('profile');
-    
-    console.log('🚀 Запуск Google редиректа...');
     await signInWithRedirect(auth, provider);
-    console.log('✅ Редирект на Google успешно запущен');
   } catch (error) {
     console.error('❌ Подробная ошибка входа через Google:', error);
-    console.error('❌ Код ошибки:', error.code);
-    console.error('❌ Сообщение ошибки:', error.message);
+    throw error;
+  }
+};
+
+// Email аутентификация
+export const signInWithEmail = async (email: string, password: string) => {
+  initializeFirebase();
+  const auth = getFirebaseAuth();
+  if (!auth) return null;
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    return userCredential.user;
+  } catch (error: any) {
+    if (error.code === 'auth/user-not-found') {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      return userCredential.user;
+    }
+    throw error;
+  }
+};
+
+// Apple аутентификация (OAuth)
+export const signInWithApple = async () => {
+  initializeFirebase();
+  const auth = getFirebaseAuth();
+  if (!auth) return null;
+  try {
+    const provider = new OAuthProvider('apple.com');
+    provider.addScope('email');
+    provider.addScope('name');
+    await signInWithRedirect(auth, provider);
+  } catch (error) {
     throw error;
   }
 };

@@ -29,7 +29,7 @@ const checkAdReadiness = (): Promise<void> => {
 
     // Проверяем готовность Google AdSense
     const checkAdSense = () => {
-      if (window.adsbygoogle && (window.adsbygoogle as any).loaded) {
+      if (false) {
         console.log('✅ AdSense готов к показу');
         return true;
       }
@@ -170,36 +170,12 @@ export default function CardFlipSplash({ onComplete, playerLevel = 1 }: CardFlip
         console.log('⏳ Ожидание инициализации AdMob...');
       }
       
-      // Проверяем AdSense и запускаем предзагрузку
-      if (window.adsbygoogle) {
-        console.log('✅ Google AdSense готов к работе');
-        try {
-          (window.adsbygoogle as any).loaded = true;
-        } catch (error) {
-          console.log('⚠️ Ошибка настройки AdSense:', error);
-        }
-      } else {
-        console.log('📥 Загрузка Google AdSense...');
-      }
-      
       // Запускаем проверку готовности рекламы в фоне
       setTimeout(() => {
         checkAdReadiness().then(() => {
           console.log('🎉 Рекламные сервисы полностью готовы к показу');
         });
       }, 500);
-
-      // Инициализируем рекламу на заставке через 1 секунду
-      setTimeout(() => {
-        try {
-          if (window.adsbygoogle) {
-            (window.adsbygoogle as any).push({});
-            console.log('📺 Реклама на заставке инициализирована');
-          }
-        } catch (error) {
-          console.log('⚠️ Ошибка инициализации рекламы на заставке:', error);
-        }
-      }, 1500);
     };
     
     // Запускаем инициализацию рекламы
@@ -450,16 +426,6 @@ export default function CardFlipSplash({ onComplete, playerLevel = 1 }: CardFlip
             <div className="px-2 py-1 bg-white/10 rounded text-xs">AdSense</div>
           </div>
         </div>
-        
-        {/* Скрытый AdSense для будущего использования */}
-        <ins 
-          className="adsbygoogle"
-          style={{ display: 'none' }}
-          data-ad-client="ca-pub-4328087894770041"
-          data-ad-slot="5243095999"
-          data-ad-format="auto"
-          data-full-width-responsive="true"
-        />
       </div>
     </AnimatePresence>
   );

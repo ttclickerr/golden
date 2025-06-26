@@ -61,6 +61,63 @@ export const ASSETS: AssetData[] = [
     category: 'stocks',
     multiplier: 1.19
   },
+  { 
+    id: 'burger_queen', 
+    name: 'Burger Queen', 
+    basePrice: 95, 
+    baseIncome: 2, 
+    icon: '👑', 
+    description: 'Сеть ресторанов быстрого питания',
+    category: 'stocks',
+    multiplier: 1.18
+  },
+  { 
+    id: 'biocat', 
+    name: 'BIOCAT', 
+    basePrice: 95, 
+    baseIncome: 2, 
+    icon: '🧬', 
+    description: 'Биотехнологическая компания',
+    category: 'stocks',
+    multiplier: 1.18
+  },
+  { 
+    id: 'mgd', 
+    name: 'Magdoladns', 
+    basePrice: 94, 
+    baseIncome: 2, 
+    icon: '🧲', 
+    description: 'Редкий металл будущего',
+    category: 'stocks',
+    multiplier: 1.18
+  },
+  { 
+    id: 'uranium', 
+    name: 'Uranium', 
+    basePrice: 28866380, 
+    baseIncome: 1000, 
+    icon: '☢️', 
+    description: 'Уран — стратегический ресурс',
+    category: 'stocks',
+    multiplier: 1.18
+  },
+  { id: 'ko', name: 'Coca-Kola', basePrice: 62, baseIncome: 1, icon: '🥤', description: 'Газированные напитки', category: 'stocks', multiplier: 1.12 },
+  { id: 'oil', name: 'Crude Oil', basePrice: 73, baseIncome: 1, icon: '🛢️', description: 'Сырая нефть', category: 'commodity', multiplier: 1.12 },
+  { id: 'jnj', name: 'Johnson & Johnsen', basePrice: 155, baseIncome: 2, icon: '💊', description: 'Фармацевтика', category: 'stocks', multiplier: 1.13 },
+  { id: 'pg', name: 'Procter & Gambie', basePrice: 156, baseIncome: 2, icon: '🧴', description: 'Потребительские товары', category: 'stocks', multiplier: 1.13 },
+  { id: 'googl', name: 'Foogle Inc', basePrice: 165, baseIncome: 2, icon: '🔍', description: 'Поисковые технологии', category: 'stocks', multiplier: 1.14 },
+  { id: 'amzn', name: 'Amazom LLC', basePrice: 178, baseIncome: 2, icon: '📦', description: 'Электронная коммерция', category: 'stocks', multiplier: 1.14 },
+  { id: 'aapl', name: 'Tiple Technologies', basePrice: 195, baseIncome: 2, icon: '🍎', description: 'Технологии', category: 'stocks', multiplier: 1.15 },
+  { id: 'jpm', name: 'KP Morgan Bank', basePrice: 215, baseIncome: 2, icon: '🏦', description: 'Банковские услуги', category: 'stocks', multiplier: 1.15 },
+  { id: 'tsla', name: 'Desla Motors', basePrice: 248, baseIncome: 2, icon: '⚡', description: 'Электромобили', category: 'stocks', multiplier: 1.16 },
+  { id: 'silver', name: 'Silver', basePrice: 400, baseIncome: 3, icon: '🥈', description: 'Серебро', category: 'commodity', multiplier: 1.16 },
+  { id: 'msft', name: 'Microsys Corp', basePrice: 420, baseIncome: 3, icon: '🖥️', description: 'Программное обеспечение', category: 'stocks', multiplier: 1.17 },
+  { id: 'nvda', name: 'Mvidia Corp', basePrice: 875, baseIncome: 4, icon: '🎮', description: 'Графические процессоры', category: 'stocks', multiplier: 1.18 },
+  { id: 'platinum', name: 'Platinum', basePrice: 950, baseIncome: 4, icon: '⚪', description: 'Платина', category: 'commodity', multiplier: 1.18 },
+  { id: 'gold', name: 'Gold', basePrice: 2045, baseIncome: 5, icon: '🥇', description: 'Золото', category: 'commodity', multiplier: 1.19 },
+  { id: 'eth', name: 'Ethereum', basePrice: 3450, baseIncome: 6, icon: '⟠', description: 'Криптовалюта', category: 'crypto', multiplier: 1.20 },
+  { id: 'btc', name: 'Bitcoin', basePrice: 67500, baseIncome: 10, icon: '₿', description: 'Криптовалюта', category: 'crypto', multiplier: 1.22 },
+  { id: 'brk', name: 'Berkshite Holdings', basePrice: 545000, baseIncome: 20, icon: '💎', description: 'Инвестиционный холдинг', category: 'stocks', multiplier: 1.25 },
   
   // Real Estate - Недорогая недвижимость
   { 

@@ -8,9 +8,12 @@ interface QuickSettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
   onOpenConsent: () => void;
+  gameState?: any;
+  onGameStateLoad?: () => void;
+  onGameStateSave?: () => void;
 }
 
-export function QuickSettingsModal({ isOpen, onClose, onOpenConsent }: QuickSettingsModalProps) {
+export function QuickSettingsModal({ isOpen, onClose, onOpenConsent, gameState, onGameStateLoad, onGameStateSave }: QuickSettingsModalProps) {
   const [soundEnabled, setSoundEnabled] = useState(() => {
     return localStorage.getItem('tycoon-sound') !== 'false';
   });
@@ -37,10 +40,11 @@ export function QuickSettingsModal({ isOpen, onClose, onOpenConsent }: QuickSett
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="w-full h-full flex flex-col bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 border border-purple-500/20">
+    <div
+      className="w-full h-full flex flex-col bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 border border-purple-500/20"
+      style={{ display: isOpen ? 'flex' : 'none' }}
+    >
       <div className="flex items-center justify-between p-6 border-b border-gradient-to-r from-purple-500/20 to-cyan-500/20 bg-gradient-to-r from-purple-900/30 to-cyan-900/30">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 via-violet-600 to-cyan-500 flex items-center justify-center shadow-lg">
@@ -107,7 +111,11 @@ export function QuickSettingsModal({ isOpen, onClose, onOpenConsent }: QuickSett
             ОБЛАЧНОЕ СОХРАНЕНИЕ
           </h3>
           <div className="rounded-xl border-2 border-purple-500/50 bg-gradient-to-r from-purple-900/40 to-violet-900/40 p-4">
-            <FirebaseAuth />
+            <FirebaseAuth 
+              gameState={gameState || {}} 
+              onGameStateLoad={onGameStateLoad || (()=>{})} 
+              onGameStateSave={onGameStateSave || (()=>{})} 
+            />
           </div>
         </div>
 

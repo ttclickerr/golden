@@ -37,19 +37,6 @@ export function ProductionAdBanner({ className = '' }: ProductionAdBannerProps) 
         right: 'env(safe-area-inset-right, 0)'
       }}>
       <div className="w-full h-[50px] bg-white border-t border-gray-200">
-        <ins
-          className="adsbygoogle"
-          style={{
-            display: 'block',
-            width: '100%',
-            height: '50px',
-            marginBottom: 'env(safe-area-inset-bottom, 0)'
-          }}
-          data-ad-client={import.meta.env.VITE_ADMOB_APP_ID}
-          data-ad-slot={import.meta.env.VITE_ADMOB_BANNER_ID}
-          data-ad-format="auto"
-          data-full-width-responsive="true"
-        />
       </div>
     </div>
   );

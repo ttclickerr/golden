@@ -7,9 +7,11 @@ import { Layout } from './components/Layout';
 import { NotificationSystem, useNotifications } from './components/NotificationSystem';
 import TycoonClicker from "./pages/tycoon-clicker";
 import SystemPage from './pages/SystemPage';
+import PremiumPaymentPage from "./pages/PremiumPaymentPage";
 import { useEffect } from "react";
 import { trackAnalyticsEvent } from "./lib/trackAnalyticsEvent";
 import { useLocation } from "wouter";
+import ErrorBoundary from './components/ErrorBoundary';
 
 function App() {
   const { notifications, removeNotification } = useNotifications();
@@ -44,26 +46,31 @@ function App() {
   }, [location]);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Layout>
-          <NotificationSystem 
-            notifications={notifications} 
-            onRemove={removeNotification} 
-          />
-          <div className="dark no-flash min-h-screen">
-            <Switch>
-              <Route path="/">
-                <TycoonClicker />
-              </Route>
-              <Route path="/system">
-                <SystemPage />
-              </Route>
-            </Switch>
-          </div>
-        </Layout>
-      </TooltipProvider>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Layout>
+            <NotificationSystem 
+              notifications={notifications} 
+              onRemove={removeNotification} 
+            />
+            <div className="dark no-flash min-h-screen">
+              <Switch>
+                <Route path="/">
+                  <TycoonClicker />
+                </Route>
+                <Route path="/system">
+                  <SystemPage />
+                </Route>
+                <Route path="/premium-payment">
+                  <PremiumPaymentPage />
+                </Route>
+              </Switch>
+            </div>
+          </Layout>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 

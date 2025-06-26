@@ -6,11 +6,41 @@ import { BUSINESSES } from "@/data/businesses";
 import { ACHIEVEMENTS, getCompletedAchievements } from "@/data/achievements";
 import { LeaderboardSection } from "@/components/LeaderboardSection";
 import { PieChart as PieChartIcon, TrendingUp as TrendingUpIcon, TrendingDown as TrendingDownIcon, BarChart3 as BarChart3Icon } from "lucide-react";
+import { assetNames } from "@/lib/assetNames";
+import type { Business } from "@/data/businesses";
 
 const formatPercentage = (value: number) => `${value.toFixed(1)}%`;
 
+interface Investments {
+  [assetId: string]: number;
+}
+
+interface BusinessState {
+  owned?: boolean;
+  purchaseDate?: number;
+  upgrades?: string[];
+  quantity?: number;
+}
+
+interface Businesses {
+  [businessId: string]: BusinessState;
+}
+
+interface GameState {
+  balance: number;
+  level: number;
+  xp: number;
+  maxXp: number;
+  clickValue: number;
+  passiveIncome: number;
+  totalClicks: number;
+  investments: Investments;
+  businesses: Businesses;
+  // ...other fields
+}
+
 interface PortfolioSectionProps {
-  gameState: any;
+  gameState: GameState;
   getCompletedAchievements: () => any[];
   ACHIEVEMENTS: any[];
   getPortfolioValue: () => number;
@@ -22,11 +52,11 @@ export function PortfolioSection({ gameState, getCompletedAchievements, ACHIEVEM
   const portfolioValue = getPortfolioValue();
   // Расчет статистики по разделам
   const tradingAssets = Object.entries(gameState.investments).filter(([assetId]) => 
-    ['apple', 'tesla', 'btc-separate', 'eth-separate', 'msft', 'googl', 'amzn', 'nvda', 'jpm', 'brk', 'ko', 'pg', 'jnj'].includes(assetId)
+    Object.keys(assetNames).includes(assetId)
   );
   
   const businessCount = Object.keys(gameState.businesses).filter(businessId => 
-    gameState.businesses[businessId]?.owned
+    Number(gameState.businesses[businessId]?.quantity) > 0
   ).length;
   
   const totalBusinessValue = Object.entries(gameState.businesses).reduce((total, [businessId, business]) => {
@@ -36,17 +66,15 @@ export function PortfolioSection({ gameState, getCompletedAchievements, ACHIEVEM
     return total;
   }, 0);
   
+  // Исправленный расчёт tradingValue
   const tradingValue = tradingAssets.reduce((total, [assetId, quantity]) => {
-    // Базовые цены для торговых активов
-    const prices: Record<string, number> = {
-      'apple': 195, 'tesla': 248, 'btc-separate': 67500, 'eth-separate': 3450,
-      'msft': 420, 'googl': 165, 'amzn': 180, 'nvda': 875, 'jpm': 190, 'brk': 545000, 'ko': 68, 'pg': 156, 'jnj': 155
-    };
-    return total + (prices[assetId] || 0) * quantity;
+    const q = Number(quantity);
+    const asset = ASSETS.find(a => a.id === assetId);
+    return total + (asset ? asset.basePrice * q : 0);
   }, 0);
   
   const classicInvestments = Object.entries(gameState.investments).filter(([assetId]) => 
-    !['apple', 'tesla', 'btc-separate', 'eth-separate', 'msft', 'googl', 'amzn', 'nvda', 'jpm', 'brk', 'ko', 'pg', 'jnj'].includes(assetId)
+    !Object.keys(assetNames).includes(assetId)
   );
   
   const classicValue = classicInvestments.reduce((total, [assetId, quantity]) => {
@@ -81,20 +109,18 @@ export function PortfolioSection({ gameState, getCompletedAchievements, ACHIEVEM
     };
   };
 
-  // Get top investments
+  // Исправленный getTopInvestments
   const getTopInvestments = () => {
     return Object.entries(gameState.investments || {})
       .map(([assetId, quantity]) => {
+        const q = Number(quantity);
         const asset = ASSETS.find(a => a.id === assetId);
         if (!asset) return null;
-        
-        const value = asset.currentPrice * quantity;
-        const change = ((asset.currentPrice - asset.basePrice) / asset.basePrice) * 100;
-        
+        const value = asset.basePrice * q;
+        const change = 0; // Нет динамики, только basePrice
         return {
           name: asset.name,
-          symbol: asset.symbol,
-          quantity,
+          quantity: q,
           value,
           change,
           icon: asset.icon
@@ -436,7 +462,7 @@ export function PortfolioSection({ gameState, getCompletedAchievements, ACHIEVEM
           {/* Trading Assets */}
           <div className="bg-slate-700/30 rounded-lg p-4 border border-slate-600/30">
             <div className="flex items-center justify-between mb-3 pb-2 border-b border-gray-600">
-              <h4 className="font-semibold text-gray-300">📊 TRADING PORTFOLIO</h4>
+              <h4 className="font-semibold text-gray-300">📊 TRADING PORTFОЛИО</h4>
               <div className="text-xs text-gray-400">{tradingAssets.length} positions</div>
             </div>
             
@@ -758,11 +784,11 @@ export function PortfolioSection({ gameState, getCompletedAchievements, ACHIEVEM
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-400">Achievements</span>
-                  <span className="text-yellow-400 font-bold">{getCompletedAchievements(gameState).length}/{ACHIEVEMENTS.length}</span>
+                  <span className="text-yellow-400 font-bold">{getCompletedAchievements().length}/{ACHIEVEMENTS.length}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-400">Progress</span>
-                  <span className="text-white font-bold">{((getCompletedAchievements(gameState).length / ACHIEVEMENTS.length) * 100).toFixed(1)}%</span>
+                  <span className="text-white font-bold">{((getCompletedAchievements().length / ACHIEVEMENTS.length) * 100).toFixed(1)}%</span>
                 </div>
               </div>
             </div>

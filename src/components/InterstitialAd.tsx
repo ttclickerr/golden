@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { adMobService } from '../services/admob-universal';
 import { trackAnalyticsEvent } from '../lib/trackAnalyticsEvent';
+import { useAuth } from '@/hooks/useAuth';
 
 interface InterstitialAdProps {
   onAdClosed: () => void;
@@ -9,6 +10,7 @@ interface InterstitialAdProps {
 }
 
 export function InterstitialAd({ onAdClosed, onAdFailed, trigger = 'manual' }: InterstitialAdProps) {
+  const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
   const showInterstitial = async () => {
@@ -20,20 +22,20 @@ export function InterstitialAd({ onAdClosed, onAdFailed, trigger = 'manual' }: I
       const success = await adMobService.showInterstitial();
       
       // Логируем показ interstitial рекламы
-      const userId = localStorage.getItem('user_id') || 'anonymous';
+      const userId = user?.uid || 'anonymous';
       await trackAnalyticsEvent({ event: 'interstitial_shown', adType: 'interstitial', provider: 'admob', userId });
       
       if (!success) {
         onAdFailed?.('Не удалось загрузить рекламу');
-        await trackAnalyticsEvent({ event: 'ad_failed', adType: 'interstitial', provider: 'admob', userId });
+        await trackAnalyticsEvent({ event: 'error', adType: 'interstitial', provider: 'admob', userId });
       }
       
       onAdClosed();
     } catch (error) {
       console.error('Interstitial ad error:', error);
       onAdFailed?.('Ошибка при показе рекламы');
-      const userId = localStorage.getItem('user_id') || 'anonymous';
-      await trackAnalyticsEvent({ event: 'ad_failed', adType: 'interstitial', provider: 'admob', userId });
+      const userId = user?.uid || 'anonymous';
+      await trackAnalyticsEvent({ event: 'error', adType: 'interstitial', provider: 'admob', userId });
     } finally {
       setIsLoading(false);
     }

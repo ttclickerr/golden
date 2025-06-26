@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { AdMobBanner } from "./AdMobBanner";
 import { IronSourceBanner } from "./IronSourceBanner";
 import { trackAnalyticsEvent } from '../lib/trackAnalyticsEvent';
+import { useAuth } from '@/hooks/useAuth';
 
 // Расширяем window для поддержки bridge-плагинов
 declare global {
@@ -37,7 +38,8 @@ async function showNativeBanner(network: 'admob' | 'ironsource') {
   }
 }
 
-export function Footer() {
+export function Footer(props: any) {
+  const { user } = useAuth();
   const [bestNetwork, setBestNetwork] = useState<'admob' | 'ironsource' | null>(null);
   const [isNative, setIsNative] = useState(false);
   const lastLoadedRef = useRef<'admob' | 'ironsource' | null>(null);
@@ -79,12 +81,10 @@ export function Footer() {
       if (native && window.admob?.banner?.hide) window.admob.banner.hide();
       if (native && window.IronSource?.hideBanner) window.IronSource.hideBanner();
     };
-  }, []);
-
-  if (!bestNetwork && lastLoadedRef.current) {
+  }, []);  if (!bestNetwork && lastLoadedRef.current) {
     // Показываем последний успешно загруженный баннер
     return (
-      <footer className="w-full fixed bottom-0 left-0 z-50">
+      <footer className="w-full fixed bottom-0 left-0 z-10">
         {lastLoadedRef.current === 'admob' ? <AdMobBanner adType="banner" /> : <IronSourceBanner />}
       </footer>
     );
@@ -92,9 +92,8 @@ export function Footer() {
 
   if (!bestNetwork) return null;
   if (isNative) return null;
-
   return (
-    <footer className="w-full fixed bottom-0 left-0 z-50">
+    <footer className="w-full fixed bottom-0 left-0 z-[5]">
       {bestNetwork === 'admob' ? <AdMobBanner adType="banner" /> : <IronSourceBanner />}
     </footer>
   );

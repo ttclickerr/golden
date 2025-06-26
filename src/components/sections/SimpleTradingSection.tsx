@@ -7,284 +7,39 @@ import { SimpleChart } from "@/components/SimpleChart";
 import { PersistentChart } from "@/components/PersistentChart";
 import { formatNumber } from "@/lib/gameData";
 import { TrendingUp, TrendingDown, Zap, X } from "lucide-react";
+import { assetNames } from "@/lib/assetNames";
+import { TRADING_ASSETS } from "@/lib/tradingAssets";
 
 interface SimpleTradingSectionProps {
   gameState: any;
   onBuyAsset: (assetId: string, quantity: number) => void;
   onSellAsset: (assetId: string, quantity: number) => void;
+  prices: Record<string, number>;
+  setPrices: React.Dispatch<React.SetStateAction<Record<string, number>>>;
+  priceChanges: Record<string, number>;
 }
 
-interface TradingAsset {
-  id: string;
-  name: string;
-  symbol: string;
-  basePrice: number;
-  type: 'crypto' | 'stock' | 'commodity';
-  icon: string;
-  volatility: number;
-  yearlyGrowthRate: number;
-  requiredLevel: number;
-}
-
-const TRADING_ASSETS: TradingAsset[] = [
-  // Самые дешевые активы
-  {
-    id: 'ko',
-    name: 'Coca-Kola',
-    symbol: 'KOLA',
-    basePrice: 62,
-    type: 'stock',
-    icon: '🥤',
-    volatility: 0.015,
-    yearlyGrowthRate: 2,
-    requiredLevel: 1
-  },
-  {
-    id: 'oil',
-    name: 'Crude Oil',
-    symbol: 'OIL',
-    basePrice: 73,
-    type: 'commodity',
-    icon: '🛢️',
-    volatility: 0.045,
-    yearlyGrowthRate: 2,
-    requiredLevel: 1
-  },
-  
-  // Средние цены
-  {
-    id: 'jnj',
-    name: 'Johnson & Johnsen',
-    symbol: 'JNSN',
-    basePrice: 155,
-    type: 'stock',
-    icon: '💊',
-    volatility: 0.016,
-    yearlyGrowthRate: 2,
-    requiredLevel: 1
-  },
-  {
-    id: 'pg',
-    name: 'Procter & Gambie',
-    symbol: 'PRGB',
-    basePrice: 156,
-    type: 'stock',
-    icon: '🧴',
-    volatility: 0.014,
-    yearlyGrowthRate: 2,
-    requiredLevel: 1
-  },
-  {
-    id: 'googl',
-    name: 'Foogle Inc',
-    symbol: 'FOGL',
-    basePrice: 165,
-    type: 'stock',
-    icon: '🔍',
-    volatility: 0.028,
-    yearlyGrowthRate: 4,
-    requiredLevel: 1
-  },
-  {
-    id: 'amzn',
-    name: 'Amazom LLC',
-    symbol: 'AMZM',
-    basePrice: 178,
-    type: 'stock',
-    icon: '📦',
-    volatility: 0.032,
-    yearlyGrowthRate: 3,
-    requiredLevel: 1
-  },
-  {
-    id: 'aapl',
-    name: 'Tiple Technologies',
-    symbol: 'TIPL',
-    basePrice: 195,
-    type: 'stock',
-    icon: '🍎',
-    volatility: 0.025,
-    yearlyGrowthRate: 4,
-    requiredLevel: 1
-  },
-  {
-    id: 'jpm',
-    name: 'KP Morgan Bank',
-    symbol: 'KPM',
-    basePrice: 215,
-    type: 'stock',
-    icon: '🏦',
-    volatility: 0.035,
-    yearlyGrowthRate: 3,
-    requiredLevel: 1
-  },
-  {
-    id: 'tsla',
-    name: 'Desla Motors',
-    symbol: 'DESL',
-    basePrice: 248,
-    type: 'stock',
-    icon: '⚡',
-    volatility: 0.035,
-    yearlyGrowthRate: 4,
-    requiredLevel: 1
-  },
-  {
-    id: 'silver',
-    name: 'Silver',
-    symbol: 'SILVER',
-    basePrice: 400,
-    type: 'commodity',
-    icon: '🥈',
-    volatility: 0.035,
-    yearlyGrowthRate: 2,
-    requiredLevel: 1
-  },
-  {
-    id: 'msft',
-    name: 'Microsys Corp',
-    symbol: 'MSYS',
-    basePrice: 420,
-    type: 'stock',
-    icon: '🖥️',
-    volatility: 0.022,
-    yearlyGrowthRate: 4,
-    requiredLevel: 1
-  },
-  {
-    id: 'nvda',
-    name: 'Mvidia Corp',
-    symbol: 'MVDA',
-    basePrice: 875,
-    type: 'stock',
-    icon: '🎮',
-    volatility: 0.055,
-    yearlyGrowthRate: 7,
-    requiredLevel: 1
-  },
-  {
-    id: 'platinum',
-    name: 'Platinum',
-    symbol: 'PLAT',
-    basePrice: 950,
-    type: 'commodity',
-    icon: '⚪',
-    volatility: 0.042,
-    yearlyGrowthRate: 1,
-    requiredLevel: 1
-  },
-  {
-    id: 'gold',
-    name: 'Gold',
-    symbol: 'GOLD',
-    basePrice: 2045,
-    type: 'commodity',
-    icon: '🥇',
-    volatility: 0.020,
-    yearlyGrowthRate: 1,
-    requiredLevel: 1
-  },
-  {
-    id: 'eth',
-    name: 'Ethereum', 
-    symbol: 'ETH',
-    basePrice: 3450,
-    type: 'crypto',
-    icon: '⟠',
-    volatility: 0.045,
-    yearlyGrowthRate: 5,
-    requiredLevel: 1
-  },
-  {
-    id: 'btc',
-    name: 'Bitcoin',
-    symbol: 'BTC',
-    basePrice: 67500,
-    type: 'crypto',
-    icon: '₿',
-    volatility: 0.05,
-    yearlyGrowthRate: 5,
-    requiredLevel: 1
-  },
-  {
-    id: 'brk',
-    name: 'Berkshite Holdings',
-    symbol: 'BRKS',
-    basePrice: 545000,
-    type: 'stock',
-    icon: '💎',
-    volatility: 0.018,
-    yearlyGrowthRate: 3,
-    requiredLevel: 5
-  },
-  
-  // Самый дорогой и труднодоступный
-  {
-    id: 'uranium',
-    name: 'Uranium',
-    symbol: 'URAN',
-    basePrice: 250000000, // Было 2 500 000, теперь в 100 раз дороже
-    type: 'commodity',
-    icon: '☢️',
-    volatility: 0.065,
-    yearlyGrowthRate: 8,
-    requiredLevel: 1 // Было 10, теперь 1
-  },
-  // Новые местные компании и фастфуд
-  {
-    id: 'magdoladns',
-    name: 'Magdoladns',
-    symbol: 'MGD',
-    basePrice: 95,
-    type: 'stock',
-    icon: '🍔',
-    volatility: 0.022,
-    yearlyGrowthRate: 3,
-    requiredLevel: 1
-  },
-  {
-    id: 'burger_queen',
-    name: 'Burger Queen',
-    symbol: 'BQ',
-    basePrice: 95,
-    type: 'stock',
-    icon: '👑',
-    volatility: 0.021,
-    yearlyGrowthRate: 2,
-    requiredLevel: 1
-  },
-  {
-    id: 'biocat',
-    name: 'BIOCAT',
-    symbol: 'BIO',
-    basePrice: 95,
-    type: 'stock',
-    icon: '🧬',
-    volatility: 0.023,
-    yearlyGrowthRate: 3,
-    requiredLevel: 1
-  }
-];
+import type { TradingAsset } from "@/lib/tradingAssets";
 
 // Функция для красивого форматирования чисел с пробелами
 const formatPrice = (price: number): string => {
   return Math.round(price).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 };
 
-export function SimpleTradingSection({ gameState, onBuyAsset, onSellAsset }: SimpleTradingSectionProps) {
+export function SimpleTradingSection({ gameState, onBuyAsset, onSellAsset, prices, setPrices, priceChanges }: SimpleTradingSectionProps) {
   // Фильтруем активы по уровню игрока
   const availableAssets = TRADING_ASSETS.filter(asset => asset.requiredLevel <= gameState.level);
   // console.log('🎮 Уровень игрока:', gameState.level, 'Доступно активов:', availableAssets.length);
   const [selectedAsset, setSelectedAsset] = useState<TradingAsset>(availableAssets.find(asset => asset.id === 'aapl') || availableAssets[0]);
-  const [prices, setPrices] = useState<Record<string, number>>(() => {
-    const initialPrices: Record<string, number> = {};
-    TRADING_ASSETS.forEach(asset => {
-      initialPrices[asset.id] = asset.basePrice;
-    });
-    return initialPrices;
-  });
+  // const [prices, setPrices] = useState<Record<string, number>>(() => {
+  //   const initialPrices: Record<string, number> = {};
+  //   TRADING_ASSETS.forEach(asset => {
+  //     initialPrices[asset.id] = asset.basePrice;
+  //   });
+  //   return initialPrices;
+  // });
 
-  const [priceChanges, setPriceChanges] = useState<Record<string, number>>({});
+  // const [priceChanges, setPriceChanges] = useState<Record<string, number>>({});
   const [chartModalOpen, setChartModalOpen] = useState(false);
   const [modalAsset, setModalAsset] = useState<TradingAsset | null>(null);
 
@@ -326,7 +81,7 @@ export function SimpleTradingSection({ gameState, onBuyAsset, onSellAsset }: Sim
           newChanges[asset.id] = ((newPrices[asset.id] - currentPrice) / currentPrice) * 100;
         });
 
-        setPriceChanges(newChanges);
+        // setPriceChanges(newChanges);
         return newPrices;
       });
     }, 1500); // Update every 1.5 seconds для большей динамики
@@ -391,7 +146,12 @@ export function SimpleTradingSection({ gameState, onBuyAsset, onSellAsset }: Sim
       'gold': 'gold',
       'silver': 'silver',
       'platinum': 'platinum',
-      'uranium': 'uranium'
+      'uranium': 'uranium',
+      'magdoladns': 'magdoladns',
+      'burger_queen': 'burger_queen',
+      'biocat': 'biocat',
+      'krc': 'krc',
+      'chtz': 'chtz'
     };
     return mapping[tradingAssetId] || tradingAssetId;
   };
@@ -418,7 +178,8 @@ export function SimpleTradingSection({ gameState, onBuyAsset, onSellAsset }: Sim
     
     // Проходим по всем инвестициям игрока
     Object.entries(gameState.investments).forEach(([assetId, quantity]) => {
-      if (quantity > 0) {
+      const qty = Number(quantity);
+      if (qty > 0) {
         // Базовые цены для торговых активов
         const assetPrices: Record<string, number> = {
           'apple': getCurrentPrice('aapl'),
@@ -432,14 +193,11 @@ export function SimpleTradingSection({ gameState, onBuyAsset, onSellAsset }: Sim
           'platinum': getCurrentPrice('platinum'),
           'uranium': getCurrentPrice('uranium')
         };
-        
-        // Если есть цена для этого актива, используем её
         if (assetPrices[assetId]) {
-          total += quantity * assetPrices[assetId];
+          total += qty * assetPrices[assetId];
         } else {
-          // Для других активов используем базовую цену 68 для ko и 73 для oil
-          if (assetId === 'ko') total += quantity * 68;
-          else if (assetId === 'oil') total += quantity * 73;
+          if (assetId === 'ko') total += qty * 68;
+          else if (assetId === 'oil') total += qty * 73;
         }
       }
     });
@@ -540,24 +298,29 @@ export function SimpleTradingSection({ gameState, onBuyAsset, onSellAsset }: Sim
                 {(() => {
                   // Создаем мапинг всех торговых активов (по возрастанию цены)
                   const assetMapping = [
-                    { investmentKey: 'ko', priceKey: 'ko', symbol: 'KOLA', name: 'Coca-Kola', icon: '🥤' },
-                    { investmentKey: 'oil', priceKey: 'oil', symbol: 'OIL', name: 'Crude Oil', icon: '🛢️' },
-                    { investmentKey: 'jnj', priceKey: 'jnj', symbol: 'JNSN', name: 'Johnson & Johnsen', icon: '💊' },
-                    { investmentKey: 'pg', priceKey: 'pg', symbol: 'PRGB', name: 'Procter & Gambie', icon: '🧴' },
-                    { investmentKey: 'googl', priceKey: 'googl', symbol: 'FOGL', name: 'Foogle Inc', icon: '🔍' },
-                    { investmentKey: 'amzn', priceKey: 'amzn', symbol: 'AMZM', name: 'Amazom LLC', icon: '📦' },
-                    { investmentKey: 'apple', priceKey: 'aapl', symbol: 'TIPL', name: 'Tiple Technologies', icon: '🍎' },
-                    { investmentKey: 'jpm', priceKey: 'jpm', symbol: 'KPM', name: 'KP Morgan Bank', icon: '🏦' },
-                    { investmentKey: 'tesla', priceKey: 'tsla', symbol: 'DESL', name: 'Desla Motors', icon: '⚡' },
-                    { investmentKey: 'silver', priceKey: 'silver', symbol: 'SILVER', name: 'Silver', icon: '🥈' },
-                    { investmentKey: 'msft', priceKey: 'msft', symbol: 'MSYS', name: 'Microsys Corp', icon: '🖥️' },
-                    { investmentKey: 'nvda', priceKey: 'nvda', symbol: 'MVDA', name: 'Mvidia Corp', icon: '🎮' },
-                    { investmentKey: 'platinum', priceKey: 'platinum', symbol: 'PLAT', name: 'Platinum', icon: '⚪' },
-                    { investmentKey: 'gold', priceKey: 'gold', symbol: 'GOLD', name: 'Gold', icon: '🥇' },
-                    { investmentKey: 'eth-separate', priceKey: 'eth', symbol: 'ETH', name: 'Ethereum', icon: '⟠' },
-                    { investmentKey: 'btc-separate', priceKey: 'btc', symbol: 'BTC', name: 'Bitcoin', icon: '₿' },
-                    { investmentKey: 'brk', priceKey: 'brk', symbol: 'BRKS', name: 'Berkshite Holdings', icon: '💎' },
-                    { investmentKey: 'uranium', priceKey: 'uranium', symbol: 'URAN', name: 'Uranium', icon: '☢️' }
+                    { investmentKey: 'ko', priceKey: 'ko', symbol: 'KOLA', name: assetNames.ko, icon: '🥤' },
+                    { investmentKey: 'oil', priceKey: 'oil', symbol: 'OIL', name: assetNames.oil, icon: '🛢️' },
+                    { investmentKey: 'jnj', priceKey: 'jnj', symbol: 'JNSN', name: assetNames.jnj, icon: '💊' },
+                    { investmentKey: 'pg', priceKey: 'pg', symbol: 'PRGB', name: assetNames.pg, icon: '🧴' },
+                    { investmentKey: 'googl', priceKey: 'googl', symbol: 'FOGL', name: assetNames.googl, icon: '🔍' },
+                    { investmentKey: 'amzn', priceKey: 'amzn', symbol: 'AMZM', name: assetNames.amzn, icon: '📦' },
+                    { investmentKey: 'apple', priceKey: 'aapl', symbol: 'TIPL', name: assetNames.apple, icon: '🍎' },
+                    { investmentKey: 'jpm', priceKey: 'jpm', symbol: 'KPM', name: assetNames.jpm, icon: '🏦' },
+                    { investmentKey: 'tesla', priceKey: 'tsla', symbol: 'DESL', name: assetNames.tsla, icon: '⚡' },
+                    { investmentKey: 'silver', priceKey: 'silver', symbol: 'SILVER', name: assetNames.silver, icon: '🥈' },
+                    { investmentKey: 'msft', priceKey: 'msft', symbol: 'MSYS', name: assetNames.msft, icon: '🖥️' },
+                    { investmentKey: 'nvda', priceKey: 'nvda', symbol: 'MVDA', name: assetNames.nvda, icon: '🎮' },
+                    { investmentKey: 'platinum', priceKey: 'platinum', symbol: 'PLAT', name: assetNames.platinum, icon: '⚪' },
+                    { investmentKey: 'gold', priceKey: 'gold', symbol: 'GOLD', name: assetNames.gold, icon: '🥇' },
+                    { investmentKey: 'eth-separate', priceKey: 'eth', symbol: 'ETH', name: assetNames.eth, icon: '⟠' },
+                    { investmentKey: 'btc-separate', priceKey: 'btc', symbol: 'BTC', name: assetNames.btc, icon: '₿' },
+                    { investmentKey: 'brk', priceKey: 'brk', symbol: 'BRKS', name: assetNames.brk, icon: '💎' },
+                    { investmentKey: 'uranium', priceKey: 'uranium', symbol: 'URAN', name: assetNames.uranium, icon: '☢️' },
+                    { investmentKey: 'magdoladns', priceKey: 'magdoladns', symbol: 'MGD', name: 'Magdoladns', icon: '🍔' },
+                    { investmentKey: 'burger_queen', priceKey: 'burger_queen', symbol: 'BQ', name: 'Burger Queen', icon: '👑' },
+                    { investmentKey: 'biocat', priceKey: 'biocat', symbol: 'BIO', name: 'BIOCAT', icon: '🧬' },
+                    { investmentKey: 'krc', priceKey: 'krc', symbol: 'KRC', name: 'Fried Chickens', icon: '🐔' },
+                    { investmentKey: 'chtz', priceKey: 'chtz', symbol: 'CHTZ', name: 'Chelyabinsk Tractor Plant', icon: '🚜' }
                   ];
                   
                   // Определяем тип для объекта holding
@@ -570,23 +333,25 @@ export function SimpleTradingSection({ gameState, onBuyAsset, onSellAsset }: Sim
                     icon: string;
                   }
                   
-                  const holdings: Holding[] = [];
-                  
-                  // Динамически создаем Holdings для всех активов которыми владеет игрок
-                  assetMapping.forEach(asset => {
-                    const quantity = gameState.investments[asset.investmentKey] || 0;
-                    if (quantity > 0) {
-                      const price = getCurrentPrice(asset.priceKey);
-                      holdings.push({
+                  // Универсальный способ: показывать все активы, которыми владеет игрок
+                  const holdings: (Holding & { assetId: string })[] = Object.keys(gameState.investments)
+                    .filter(assetId => (gameState.investments[assetId] || 0) > 0)
+                    .map(assetId => {
+                      const asset = TRADING_ASSETS.find(a => a.id === assetId);
+                      if (!asset) return null;
+                      const quantity = gameState.investments[assetId] || 0;
+                      const price = getCurrentPrice(assetId);
+                      return {
                         symbol: asset.symbol,
                         name: asset.name,
-                        quantity: quantity,
-                        price: price,
+                        quantity,
+                        price,
                         value: quantity * price,
-                        icon: asset.icon
-                      });
-                    }
-                  });
+                        icon: asset.icon,
+                        assetId
+                      };
+                    })
+                    .filter(Boolean) as (Holding & { assetId: string })[];
                   
                   if (holdings.length === 0) {
                     return (
@@ -594,102 +359,39 @@ export function SimpleTradingSection({ gameState, onBuyAsset, onSellAsset }: Sim
                     );
                   }
                   
-                  return holdings.map((holding: Holding) => {
-                    // Получаем правильный ключ для поиска в investmentPurchases
-                    let purchaseKey = '';
-                    if (holding.symbol === 'TIPL') purchaseKey = 'apple';
-                    else if (holding.symbol === 'DESL') purchaseKey = 'tesla';
-                    else if (holding.symbol === 'BTC') purchaseKey = 'btc-separate';
-                    else if (holding.symbol === 'ETH') purchaseKey = 'eth-separate';
-                    else if (holding.symbol === 'MSYS') purchaseKey = 'msft';
-                    else if (holding.symbol === 'FOGL') purchaseKey = 'googl';
-                    else if (holding.symbol === 'AMZM') purchaseKey = 'amzn';
-                    else if (holding.symbol === 'MVDA') purchaseKey = 'nvda';
-                    else if (holding.symbol === 'KPM') purchaseKey = 'jpm';
-                    else if (holding.symbol === 'BRKS') purchaseKey = 'brk';
-                    else if (holding.symbol === 'KOLA') purchaseKey = 'ko';
-                    else if (holding.symbol === 'PRGB') purchaseKey = 'pg';
-                    else if (holding.symbol === 'JNSN') purchaseKey = 'jnj';
-                    else if (holding.symbol === 'OIL') purchaseKey = 'oil';
-                    else if (holding.symbol === 'GOLD') purchaseKey = 'gold';
-                    else if (holding.symbol === 'SILVER') purchaseKey = 'silver';
-                    else if (holding.symbol === 'PLAT') purchaseKey = 'platinum';
-                    else if (holding.symbol === 'URAN') purchaseKey = 'uranium';
-                    
+                  return holdings.map((holding) => {
+                    const tradingAsset = TRADING_ASSETS.find(asset => asset.id === holding.assetId);
+                    if (!tradingAsset) return null;
+
+                    const purchaseKey = holding.assetId;
                     const purchaseInfo = gameState.investmentPurchases?.[purchaseKey] || null;
-                    
-                    // Определяем процент изменения
+
                     let gainLossPercent = 0;
                     let avgBuyPrice = holding.price;
-                    
-                    // Всегда генерируем базовое процентное изменение независимо от истории покупок
+
                     const seed = holding.symbol.charCodeAt(0) * holding.symbol.charCodeAt(1);
                     const now = Date.now();
-                    // Уникальная частота для каждого актива чтобы они не синхронизировались
                     const uniqueFreq = 30000 + (seed % 15000);
-                    // Разная амплитуда для разных активов
                     const amplitude = 2 + (seed % 10);
-                    // Добавляем случайность, которая меняется медленно
                     const randomOffset = ((Math.floor(now / 10000) + seed) % 1000) / 200 - 2.5;
-                    
-                    // Базовое изменение цены - используется всегда
                     const basePercentChange = (Math.sin(now / uniqueFreq + seed) * amplitude) + randomOffset;
-                    
+
                     if (purchaseInfo && purchaseInfo.totalShares > 0) {
-                      // Если есть реальные данные о покупках, комбинируем их с базовым изменением
                       avgBuyPrice = purchaseInfo.totalCost / purchaseInfo.totalShares;
                       const totalCost = avgBuyPrice * holding.quantity;
                       const realPercent = totalCost > 0 ? ((holding.value - totalCost) / totalCost) * 100 : 0;
-                      
-                      // Если актив только что куплен (процент = 0), используем генерируемое значение
-                      // Если актив давно в портфеле, используем реальные данные
-                      if (Math.abs(realPercent) < 0.01) {
-                        gainLossPercent = basePercentChange;
-                      } else {
-                        gainLossPercent = realPercent;
-                      }
+                      gainLossPercent = Math.abs(realPercent) < 0.01 ? basePercentChange : realPercent;
                     } else {
-                      // Нет данных о покупках - используем сгенерированное значение
                       gainLossPercent = basePercentChange;
                     }
-                    
+
                     const gainLoss = gainLossPercent > 0 ? Math.abs(gainLossPercent) * holding.value / 100 : -Math.abs(gainLossPercent) * holding.value / 100;
                     const isPositive = gainLoss >= 0;
-                    
-                    // Генерируем рекомендацию на основе цены и времени
+
                     const priceVolatility = Math.abs(Math.sin(Date.now() / 30000 + holding.symbol.charCodeAt(0)));
                     const recommendation = priceVolatility > 0.6 ? 'SELL' : priceVolatility < 0.3 ? 'BUY' : 'HOLD';
                     const recColor = recommendation === 'BUY' ? 'text-green-400' : 
                                    recommendation === 'SELL' ? 'text-red-400' : 'text-yellow-400';
-                    
-                    // Найдем соответствующий торговый актив для открытия модального окна
-                    const tradingAsset = TRADING_ASSETS.find(asset => {
-                      // Основные активы (обновленные символы)
-                      if (holding.symbol === 'TIPL') return asset.id === 'aapl';
-                      if (holding.symbol === 'DESL') return asset.id === 'tsla';
-                      if (holding.symbol === 'BTC') return asset.id === 'btc';
-                      if (holding.symbol === 'ETH') return asset.id === 'eth';
-                      
-                      // Новые акции (обновленные символы)
-                      if (holding.symbol === 'MSYS') return asset.id === 'msft';
-                      if (holding.symbol === 'FOGL') return asset.id === 'googl';
-                      if (holding.symbol === 'AMZM') return asset.id === 'amzn';
-                      if (holding.symbol === 'MVDA') return asset.id === 'nvda';
-                      if (holding.symbol === 'KPM') return asset.id === 'jpm';
-                      if (holding.symbol === 'BRKS') return asset.id === 'brk';
-                      if (holding.symbol === 'KOLA') return asset.id === 'ko';
-                      if (holding.symbol === 'PRGB') return asset.id === 'pg';
-                      if (holding.symbol === 'JNSN') return asset.id === 'jnj';
-                      
-                      // Сырьевые товары
-                      if (holding.symbol === 'OIL') return asset.id === 'oil';
-                      if (holding.symbol === 'GOLD') return asset.id === 'gold';
-                      if (holding.symbol === 'SILVER') return asset.id === 'silver';
-                      if (holding.symbol === 'PLAT') return asset.id === 'platinum';
-                      if (holding.symbol === 'URAN') return asset.id === 'uranium';
-                      
-                      return false;
-                    });
 
                     return (
                       <div 
@@ -711,15 +413,11 @@ export function SimpleTradingSection({ gameState, onBuyAsset, onSellAsset }: Sim
                             <div className="text-gray-400">{holding.quantity} × ${avgBuyPrice > 0 ? formatPrice(avgBuyPrice) : formatPrice(holding.price)}</div>
                           </div>
                         </div>
-                        
                         <div className="flex items-center space-x-2">
                           <div className="text-right">
                             <div className="text-white">${formatPrice(holding.value)}</div>
-                            <div className={`${isPositive ? 'text-green-400' : 'text-red-400'}`}>
-                              {isPositive ? '+' : ''}{gainLossPercent.toFixed(1)}%
-                            </div>
+                            <div className={`${isPositive ? 'text-green-400' : 'text-red-400'}`}>{isPositive ? '+' : ''}{gainLossPercent.toFixed(1)}%</div>
                           </div>
-                          
                           {/* Quick Action Buttons */}
                           <div className="flex items-center space-x-2">
                             <button
@@ -920,7 +618,12 @@ export function SimpleTradingSection({ gameState, onBuyAsset, onSellAsset }: Sim
                 {modalAsset.id === 'oil' && "Crude Oil - Essential energy commodity driving global transportation and industrial production."}
                 {modalAsset.id === 'uranium' && "Uranium - Nuclear fuel commodity critical for clean energy production and carbon reduction goals."}
                 {modalAsset.id === 'platinum' && "Platinum - Rare precious metal with automotive, jewelry, and industrial applications."}
-                {!['ko', 'tsla', 'aapl', 'msft', 'amzn', 'googl', 'btc', 'eth', 'gold', 'silver', 'oil', 'uranium', 'platinum'].includes(modalAsset.id) && 
+                {modalAsset.id === 'magdoladns' && "Magdoladns - A popular fast-food chain known for its burgers and fries."}
+                {modalAsset.id === 'burger_queen' && "Burger Queen - Fast-food restaurant chain specializing in burgers, fries, and shakes."}
+                {modalAsset.id === 'biocat' && "BIOCAT - A biotechnology company focused on genetic research and development."}
+                {modalAsset.id === 'krc' && "Fried Chickens - A fast-food chain famous for its fried chicken and biscuits."}
+                {modalAsset.id === 'chtz' && "Chelyabinsk Tractor Plant - A major manufacturer of tractors and agricultural machinery in Russia."}
+                {!['ko', 'tsla', 'aapl', 'msft', 'amzn', 'googl', 'btc', 'eth', 'gold', 'silver', 'oil', 'uranium', 'platinum', 'magdoladns', 'burger_queen', 'biocat', 'krc', 'chtz'].includes(modalAsset.id) && 
                  `${modalAsset.name} - A ${modalAsset.type} investment opportunity with growth potential in the current market.`}
               </div>
             </div>
@@ -990,3 +693,14 @@ export function SimpleTradingSection({ gameState, onBuyAsset, onSellAsset }: Sim
     </div>
   );
 }
+
+export function getTradingAssetPrice(assetId: string, prices?: Record<string, number>): number {
+  const tradingAsset = TRADING_ASSETS.find((a: any) => a.id === assetId);
+  if (!tradingAsset) return 0;
+  if (prices && prices[assetId]) {
+    return prices[assetId];
+  }
+  return tradingAsset.basePrice;
+}
+
+export { TRADING_ASSETS };

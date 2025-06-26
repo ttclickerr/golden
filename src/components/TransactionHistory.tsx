@@ -158,7 +158,7 @@ export function TransactionHistory({ isOpen, onClose, transactions }: Transactio
               currentTransactions.map((transaction) => {
                 const IconComponent = TRANSACTION_ICONS[transaction.type];
                 const colorClass = TRANSACTION_COLORS[transaction.type];
-                
+                const isInvestmentWithDetails = transaction.type === 'investment' && transaction.details;
                 return (
                   <div
                     key={transaction.id}
@@ -174,6 +174,15 @@ export function TransactionHistory({ isOpen, onClose, transactions }: Transactio
                           <span className="text-gray-300 truncate">
                             {transaction.description}
                           </span>
+                          {isInvestmentWithDetails && (
+                            <div className="text-[10px] text-blue-300/80 mt-0.5 flex flex-wrap gap-x-2 gap-y-0.5">
+                              <span>Asset: <b>{transaction.details.name}</b></span>
+                              <span>Price: <b>${transaction.details.price}</b></span>
+                              <span>Qty: <b>{transaction.details.quantity}</b></span>
+                              <span>Type: <b>{transaction.details.operationType === 'buy' ? 'Buy' : 'Sell'}</b></span>
+                              <span className="text-gray-400">{new Date(transaction.details.date).toLocaleString()}</span>
+                            </div>
+                          )}
                         </div>
                         <div className={`font-bold ml-2 ${
                           transaction.amount >= 0 ? 'text-emerald-400' : 'text-red-400'

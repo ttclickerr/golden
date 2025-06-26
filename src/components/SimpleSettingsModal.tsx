@@ -24,10 +24,11 @@ export function SimpleSettingsModal({ isOpen, onClose }: SimpleSettingsModalProp
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="w-full h-full flex flex-col">
+    <div
+      className="w-full h-full flex flex-col"
+      style={{ display: isOpen ? 'flex' : 'none' }}
+    >
       <div className="flex items-center justify-between p-4 border-b border-white/10">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[hsl(var(--tropico-teal))] to-[hsl(var(--tropico-cyan))] flex items-center justify-center">

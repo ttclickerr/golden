@@ -57,7 +57,7 @@ interface StoreItem {
 
 export function UnifiedBoosterStore({ gameState, onWatchAd, onPurchase, isPremium = false }: UnifiedBoosterStoreProps) {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
-  const [activeTab, setActiveTab] = useState('store');
+  const [activeTab, setActiveTab] = useState('boosters');
   const { user } = useAuth();
 
   // Единая функция проверки премиум статуса
@@ -266,18 +266,8 @@ export function UnifiedBoosterStore({ gameState, onWatchAd, onPurchase, isPremiu
   };
 
   // --- Блок инициализации идентификаторов и параметров пользователя ---
-  function getOrCreateUserId() {
-    let userId = localStorage.getItem('user_id');
-    if (!userId) {
-      userId = 'u_' + Math.random().toString(36).slice(2) + Date.now();
-      localStorage.setItem('user_id', userId);
-    }
-    // Прокидываем user_id в window для SDK
-    if (typeof window !== 'undefined') {
-      (window as any).user_id = userId;
-    }
-    return userId;
-  }
+  // userId теперь только из useAuth
+  const userId = user?.uid;
   function getOrCreateInstallTime() {
     let installTime = localStorage.getItem('install_time');
     if (!installTime) {
@@ -347,7 +337,6 @@ export function UnifiedBoosterStore({ gameState, onWatchAd, onPurchase, isPremiu
 
   // Универсальная функция для отправки любого события аналитики через SDK AppsFlyer и AppMetrica
   function trackAnalyticsEvent(event: string, params: Record<string, any> = {}) {
-    const user_id = getOrCreateUserId();
     const install_time = getOrCreateInstallTime();
     const session_id = getSessionId();
     const app_version = getAppVersion();
@@ -356,7 +345,7 @@ export function UnifiedBoosterStore({ gameState, onWatchAd, onPurchase, isPremiu
     const event_timestamp = Date.now();
     const fullParams = {
       ...params,
-      user_id,
+      user_id: userId,
       install_time,
       session_id,
       app_version,
@@ -420,7 +409,6 @@ export function UnifiedBoosterStore({ gameState, onWatchAd, onPurchase, isPremiu
       }
     } else {
       // Логируем показ рекламы (до просмотра)
-      const userId = localStorage.getItem('user_id') || 'anonymous';
       trackAnalyticsEvent('rewarded_shown', { adType: 'rewarded', provider: 'ecpm_auction', userId, rewardId: reward.id });
       // eCPM-аукцион между AdMob и IronSource
       const winner = runEcpmAuction();
@@ -942,7 +930,7 @@ export function UnifiedBoosterStore({ gameState, onWatchAd, onPurchase, isPremiu
             className="data-[state=active]:bg-purple-600 data-[state=active]:text-white text-purple-300"
           >
             <ShoppingCart className="w-4 h-4 mr-2" />
-            Store
+            NO ADS
           </TabsTrigger>
         </TabsList>
         

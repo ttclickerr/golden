@@ -4,6 +4,7 @@ import { runEcpmAuction } from '../lib/ecpmAuction';
 import { updateEcpmStats } from '../lib/ecpmStatsService';
 import { logGameEvent } from '../lib/firebase';
 import { trackRewardedAdEvent } from '../lib/trackRewardedAdEvent';
+import { useAuth } from '@/hooks/useAuth';
 
 const initialBoosters = [
   { id: 1, name: 'Mega Multiplier', isFree: true },
@@ -13,6 +14,7 @@ const initialBoosters = [
 ];
 
 const BoosterList = () => {
+  const { user } = useAuth();
   const [adLoading, setAdLoading] = useState(false);
   const [boosters, setBoosters] = useState(initialBoosters);
   const [availableBoosters, setAvailableBoosters] = useState(1); // 1 по умолчанию
@@ -35,7 +37,7 @@ const BoosterList = () => {
     } else {
       setAdLoading(true);
       const provider = winner === 'admob' ? RewardedAdProvider.AdMob : RewardedAdProvider.IronSource;
-      const userId = localStorage.getItem('user_id') || 'anonymous';
+      const userId = user?.uid || 'anonymous';
       // Логируем показ рекламы
       logGameEvent(userId, 'rewarded_shown', { provider, boosterId: booster.id });
       let result = false;

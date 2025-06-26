@@ -19,6 +19,7 @@ import {
 import { trackAnalyticsEvent } from '../lib/trackAnalyticsEvent';
 import { runEcpmAuction, getEcpmBids } from '../lib/ecpmAuction';
 import { RewardedAdsService, RewardedAdProvider } from '../services/RewardedAdsService';
+import { useAuth } from '@/hooks/useAuth';
 
 interface AdRewardSystemProps {
   isOpen: boolean;
@@ -130,6 +131,7 @@ const AD_REWARDS: AdReward[] = [
 ];
 
 export function AdRewardSystem({ isOpen, onClose, onWatchAd, gameState }: AdRewardSystemProps) {
+  const { user } = useAuth();
   const [adCooldowns, setAdCooldowns] = useState<Record<string, number>>({});
 
   const isOnCooldown = (rewardId: string): boolean => {
@@ -167,7 +169,7 @@ export function AdRewardSystem({ isOpen, onClose, onWatchAd, gameState }: AdRewa
     console.log(`[AdRewardSystem] eCPM аукцион: победитель — ${winner}`);
 
     // Логируем показ рекламы (до просмотра)
-    const userId = localStorage.getItem('user_id') || 'anonymous';
+    const userId = user?.uid || 'anonymous';
     trackAnalyticsEvent({ event: 'rewarded_shown', adType: 'rewarded', provider: winner, userId, rewardId: reward.id });
 
     // Показываем реальную рекламу через сервис

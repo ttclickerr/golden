@@ -7,7 +7,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyDSv2HCSQKCklKrcQm1DHjz-geFFG9S7bs",
   authDomain: "tycoon-clicker-ca2ac.firebaseapp.com",
   projectId: "tycoon-clicker-ca2ac",
-  storageBucket: "tycoon-clicker-ca2ac.firebasestorage.app",
+  storageBucket: "tycoon-clicker-ca2ac.appspot.com",
   appId: "1:809250963923:web:1fad78ae66acec410b6f26",
 };
 

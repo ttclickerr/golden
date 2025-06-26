@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { adMobService } from "../services/admob-universal";
 import { trackAllAnalytics, AnalyticsEvents } from '../lib/analytics-universal';
 import { trackAnalyticsEvent } from '../lib/trackAnalyticsEvent';
+import { useAuth } from '@/hooks/useAuth';
 
 interface AdBannerProps {
   onClose?: () => void;
@@ -9,12 +10,15 @@ interface AdBannerProps {
 }
 
 export function AdBanner({ onClose, className = "" }: AdBannerProps) {
+  const { user } = useAuth();
   const [adLoaded, setAdLoaded] = useState(false);
   const [isPremium, setIsPremium] = useState(() => {
     const savedPremiumType = localStorage.getItem('premium-type');
     const testModeActive = localStorage.getItem('premium-test-mode') === 'enabled';
     return (savedPremiumType === 'lifetime' || savedPremiumType === 'weekly') && !testModeActive;
   });
+
+  const userId = user?.uid || 'anonymous';
 
   useEffect(() => {
     const initAdSense = async () => {
@@ -29,14 +33,14 @@ export function AdBanner({ onClose, className = "" }: AdBannerProps) {
         script.onload = () => {
           (window as any).adsbygoogle = (window as any).adsbygoogle || [];
           setAdLoaded(true);
-          trackAnalyticsEvent({ event: 'banner_shown', adType: 'banner', provider: 'admob', userId: localStorage.getItem('user_id') || 'anonymous' });
+          trackAnalyticsEvent({ event: 'banner_shown', adType: 'banner', provider: 'admob', userId });
         };
         script.onerror = () => {
-          trackAnalyticsEvent({ event: 'ad_failed', adType: 'banner', provider: 'admob', userId: localStorage.getItem('user_id') || 'anonymous' });
+          trackAnalyticsEvent({ event: 'error', adType: 'banner', provider: 'admob', userId });
         };
       } else {
         setAdLoaded(true);
-        trackAnalyticsEvent({ event: 'banner_shown', adType: 'banner', provider: 'admob', userId: localStorage.getItem('user_id') || 'anonymous' });
+        trackAnalyticsEvent({ event: 'banner_shown', adType: 'banner', provider: 'admob', userId });
       }
     };
 
@@ -68,7 +72,7 @@ export function AdBanner({ onClose, className = "" }: AdBannerProps) {
   }
 
   return (
-    <div className={`fixed bottom-0 left-0 right-0 z-[9999] ${className}`}>
+    <div className={`fixed bottom-0 left-0 right-0 z-[40] ${className}`}>
       <div id="admob-banner-production" className="w-full h-[60px] bg-white border-t border-gray-200 relative overflow-hidden">
         <ins 
           className="adsbygoogle"

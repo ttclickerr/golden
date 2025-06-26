@@ -42,7 +42,11 @@ export type AnalyticsEventName =
   | 'settings_changed'
   | 'achievement_unlocked'
   | 'level_up'
-  | 'milestone_level';
+  | 'milestone_level'
+  | 'premium_payment_page_view'
+  | 'premium_reset'
+  | 'premium_payment_start'
+  | 'premium_purchase_started';
 
 export interface AnalyticsEventParams {
   event: AnalyticsEventName;

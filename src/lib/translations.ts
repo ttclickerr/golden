@@ -43,6 +43,7 @@ export interface Translations {
   business: string;
   casino: string;
   portfolio: string;
+  money: string;
   
   // Common
   level: string;
@@ -423,7 +424,8 @@ export const translations = {
     cornerStore: "Corner Store",
     adError: "Ad Loading Error",
     loadingError: "Loading Error",
-    cooldownReset: "Cooldown Reset"
+    cooldownReset: "Cooldown Reset",
+    money: "Деньги"
   },
 
   zh: {

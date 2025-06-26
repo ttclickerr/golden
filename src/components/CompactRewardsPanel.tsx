@@ -7,6 +7,7 @@ import { useTranslation } from '@/lib/i18n';
 import { RewardedAdsService, RewardedAdProvider } from '../services/RewardedAdsService';
 import { runEcpmAuction } from '../lib/ecpmAuction';
 import { trackAnalyticsEvent } from '../lib/trackAnalyticsEvent';
+import { useAuth } from '@/hooks/useAuth';
 
 interface CompactRewardsPanelProps {
   gameState: any;
@@ -28,6 +29,7 @@ interface AdReward {
 
 export function CompactRewardsPanel({ gameState, onWatchAd, onPurchase, isPremium = false }: CompactRewardsPanelProps) {
   const { t } = useTranslation();
+  const { user } = useAuth();
 
   // Оптимизированные награды - только самые важные (выбор без выбора)
   const rewards: AdReward[] = [
@@ -103,7 +105,7 @@ export function CompactRewardsPanel({ gameState, onWatchAd, onPurchase, isPremiu
   const handleWatchAd = async (reward: AdReward) => {
     if (isOnCooldown(reward)) return;
     const winner = runEcpmAuction();
-    const userId = localStorage.getItem('user_id') || 'anonymous';
+    const userId = user?.uid || 'anonymous';
     trackAnalyticsEvent({ event: 'rewarded_shown', adType: 'rewarded', provider: winner, userId, rewardId: reward.id });
     let adWatched = false;
     if (winner === 'admob') {

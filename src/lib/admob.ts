@@ -1,13 +1,7 @@
 // Типы для AdMob/Google Ads
 declare global {
   interface Window {
-    adsbygoogle: any[];
-    googletag: {
-      cmd: any[];
-      defineSlot: (adUnitPath: string, size: number[], div: string) => any;
-      pubads: () => any;
-      enableServices: () => void;
-    };
+    // googletag: any; // Удалено, больше не используется
   }
 }
 
@@ -51,7 +45,6 @@ class AdMobService {
     this.adIdPermissionGranted = await this.checkAdIdPermission();
     
     if (typeof window !== 'undefined') {
-      window.adsbygoogle = window.adsbygoogle || [];
       this.isInitialized = true;
       console.log('AdMob service initialized successfully');
       console.log('AD_ID permission status:', this.adIdPermissionGranted ? 'Granted' : 'Not granted');
@@ -116,7 +109,7 @@ class AdMobService {
                data-full-width-responsive="true"></ins>
         `;
 
-        (window.adsbygoogle = window.adsbygoogle || []).push({});
+        // adsbygoogle code removed
         
         setTimeout(() => {
           resolve({ success: true });

@@ -1,15 +1,15 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { useGameState } from "@/hooks/useGameState";
+import { ExtendedGameState } from "@/types/commonTypes";
 import { useAdRewards } from "@/hooks/useAdRewards";
 import { StatsHeader } from "@/components/StatsHeader";
 import { ClickButton } from "@/components/ClickButton";
 import { InvestmentCard } from "@/components/InvestmentCard";
-import { NavigationBar } from "@/components/NavigationBar";
+import { AdBannerBottom } from "@/components/AdBannerBottom";
+import { AppLayout } from "@/components/AppLayout";
 import { UnifiedBoosterStore } from "@/components/UnifiedBoosterStore";
 import { AdMobBanner } from "@/components/AdMobBanner";
-import { AdBanner } from "@/components/AdBanner";
-import { ProductionAdBanner } from "@/components/ProductionAdBanner";
 import { adjustService } from "@/lib/adjust";
 import { adMobService } from "@/lib/admob";
 import { appsFlyerService } from "@/lib/appsflyer";
@@ -25,7 +25,8 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { formatNumber } from "@/lib/gameData";
-import { useTranslation, getLanguageFlag, getLanguageName, type Language } from "@/lib/i18n";
+import { usePremiumStatus } from "@/hooks/usePremiumStatus";
+import { useTranslation, getLanguageFlag, getLanguageName, type Language, languageNames } from "@/lib/i18n";
 import { useTransactionHistory } from "@/components/TransactionHistory";
 import { useNotifications } from "@/components/NotificationSystem";
 import { SettingsModal } from "@/components/SettingsModalNew";
@@ -37,14 +38,20 @@ import { AchievementCelebration } from "@/components/AchievementCelebration";
 import { LevelUpCelebration } from "@/components/LevelUpCelebration";
 import { inAppPurchaseService } from "@/services/InAppPurchaseService";
 import { trackAllAnalytics, AnalyticsEvents } from "@/lib/analytics-universal";
+import { AuthModal } from '@/components/AuthModal';
+import { assetNames } from "@/lib/assetNames";
 
-import { ACHIEVEMENTS, getCompletedAchievements, getNextAchievement } from "@/data/achievements";
+import { ACHIEVEMENTS, getCompletedAchievements, getNextAchievement, Achievement } from "@/data/achievements";
 
 import { Volume2, Vibrate, RotateCcw, Globe, Play, Cloud, Shield, Settings } from "lucide-react";
 import { vibrationService } from "@/lib/vibration";
 import { useLocation } from "wouter";
+import { TRADING_ASSETS, getTradingAssetPrice } from '@/components/sections/SimpleTradingSection';
+import { NewNavigationBar } from "@/components/NewNavigationBar";
 
 export default function TycoonClicker() {
+  console.log('[DEBUG] TycoonClicker rendered', { timestamp: new Date().toISOString() });
+
   const { 
     gameState, 
     setGameState,
@@ -62,8 +69,26 @@ export default function TycoonClicker() {
     purchasePremium,
     ASSETS, 
     ACHIEVEMENTS 
-  } = useGameState();
+  } = useGameState() as { 
+    gameState: ExtendedGameState; 
+    setGameState: any;
+    handleClick: any;
+    buyInvestment: any;
+    sellInvestment: any;
+    quickBuyAsset: any;
+    quickSellAsset: any;
+    activateBooster: any;
+    buyBusiness: any;
+    upgradeBusiness: any;
+    sellBusiness: any;
+    portfolioValue: any;
+    checkPremiumStatus: any;
+    purchasePremium: any;
+    ASSETS: any;
+    ACHIEVEMENTS: any;
+  };
   const { t, language } = useTranslation();
+  const { isPremium, premiumType, expiryDate, testModeActive } = usePremiumStatus();
   const { transactions, addTransaction } = useTransactionHistory();
   const { addNotification } = useNotifications();
   const { user } = useAuth();
@@ -72,11 +97,7 @@ export default function TycoonClicker() {
   const [activeSection, setActiveSection] = useState('home');
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [consentModalOpen, setConsentModalOpen] = useState(false);
-  const [isPremium, setIsPremium] = useState(() => {
-    const savedPremiumType = localStorage.getItem('premium-type');
-    const testModeActive = localStorage.getItem('premium-test-mode') === 'enabled';
-    return (savedPremiumType === 'lifetime' || savedPremiumType === 'weekly') && !testModeActive;
-  });
+  const [showAuth, setShowAuth] = useState(false);
 
   // Achievement system state
   const [currentAchievement, setCurrentAchievement] = useState<any>(null);
@@ -87,6 +108,46 @@ export default function TycoonClicker() {
   // Показываем LevelUpCelebration только один раз для каждого уровня
   const lastCelebratedLevelRef = useRef<number | null>(null);
 
+  // --- 1. Состояние цен трейдинга на уровне TycoonClicker ---
+  const [prices, setPrices] = useState<Record<string, number>>(() => {
+    const initialPrices: Record<string, number> = {};
+    TRADING_ASSETS.forEach(asset => {
+      initialPrices[asset.id] = asset.basePrice;
+    });
+    return initialPrices;
+  });
+  const [priceChanges, setPriceChanges] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPrices(prev => {
+        const newPrices = { ...prev };
+        const newChanges: Record<string, number> = {};
+        TRADING_ASSETS.forEach(asset => {
+          const currentPrice = prev[asset.id];
+          const dailyGrowthRate = Math.pow(1 + asset.yearlyGrowthRate, 1/365) - 1;
+          const baseGrowth = dailyGrowthRate / (24 * 60 / 3);
+          const enhancedVolatility = asset.volatility * 3;
+          const volatilityChange = (Math.random() - 0.5) * enhancedVolatility;
+          const newsEventChance = Math.random();
+          let newsImpact = 0;
+          if (newsEventChance < 0.05) {
+            newsImpact = (Math.random() - 0.3) * 0.35;
+          }
+          const totalChange = baseGrowth + volatilityChange + newsImpact;
+          const newPrice = currentPrice * (1 + totalChange);
+          const minPrice = asset.basePrice * 0.3;
+          const maxPrice = asset.basePrice * 10.0;
+          newPrices[asset.id] = Math.max(minPrice, Math.min(maxPrice, Math.round(newPrice * 100) / 100));
+          newChanges[asset.id] = ((newPrices[asset.id] - currentPrice) / currentPrice) * 100;
+        });
+        setPriceChanges(newChanges);
+        return newPrices;
+      });
+    }, 1500);
+    return () => clearInterval(interval);
+  }, []);
+
   // Initialize premium status from localStorage
   useEffect(() => {
     const savedPremiumStatus = localStorage.getItem('premium-status');
@@ -94,7 +155,7 @@ export default function TycoonClicker() {
     
     if (savedPremiumStatus === 'true' && savedPremiumType) {
       // Restore premium status in game state
-      setGameState(prev => ({
+      setGameState((prev: ExtendedGameState) => ({
         ...prev,
         isPremium: true,
         premiumType: savedPremiumType,
@@ -109,9 +170,32 @@ export default function TycoonClicker() {
     const handlePremiumChange = () => {
       const savedPremiumType = localStorage.getItem('premium-type');
       const testModeActive = localStorage.getItem('premium-test-mode') === 'enabled';
+      const prevPremiumStatus = isPremium;
       const newPremiumStatus = (savedPremiumType === 'lifetime' || savedPremiumType === 'weekly') && !testModeActive;
-      console.log('🔍 Ad Banner Check:', { savedPremiumType, testModeActive, newPremiumStatus });
-      setIsPremium(newPremiumStatus);
+      
+      console.log('🔍 Premium Status Change:', { savedPremiumType, testModeActive, prevPremiumStatus, newPremiumStatus });
+      
+      // Premium status is now handled by usePremiumStatus hook
+      // Remove direct setIsPremium call since it's not available in this scope
+      
+      // Показываем уведомление при изменении статуса премиума
+      if (!prevPremiumStatus && newPremiumStatus) {
+        // Премиум только что активирован
+        addNotification({
+          title: '🎉 Премиум активирован!',
+          message: 'Реклама отключена. Наслаждайтесь игрой без ограничений!',
+          type: 'success',
+          duration: 5000
+        });
+      } else if (prevPremiumStatus && !newPremiumStatus) {
+        // Премиум истек или отключен
+        addNotification({
+          title: 'ℹ️ Премиум отключен',
+          message: 'Реклама снова включена. Рассмотрите возможность покупки премиума для комфортной игры.',
+          type: 'info',
+          duration: 5000
+        });
+      }
     };
 
     // Проверяем статус сразу
@@ -122,7 +206,7 @@ export default function TycoonClicker() {
     return () => {
       window.removeEventListener('premiumStatusChanged', handlePremiumChange);
     };
-  }, []);
+  }, [isPremium, addNotification]);
 
   // Загружаем список завершённых ачивок из localStorage при первом запуске
   useEffect(() => {
@@ -142,9 +226,9 @@ export default function TycoonClicker() {
       }
 
       const newCompleted = getCompletedAchievements();
-      const newAchievementIds = newCompleted.map(a => a.id);
+      const newAchievementIds = newCompleted.map((a: Achievement) => a.id);
       // Find newly completed achievements
-      const freshAchievements = newCompleted.filter(achievement => 
+      const freshAchievements = newCompleted.filter((achievement: Achievement) => 
         !completedAchievements.includes(achievement.id)
       );
       if (freshAchievements.length > 0) {
@@ -152,7 +236,7 @@ export default function TycoonClicker() {
         const latestAchievement = freshAchievements[0];
         setCurrentAchievement(latestAchievement);
         // Add achievement reward to balance
-        setGameState(prev => ({
+        setGameState((prev: ExtendedGameState) => ({
           ...prev,
           balance: prev.balance + latestAchievement.reward
         }));
@@ -196,6 +280,7 @@ export default function TycoonClicker() {
 
   // Функция для изменения навигации с автоматическим закрытием настроек
   const handleSectionChange = (section: string) => {
+    console.log('Section changed to:', section); // Отладочный вывод
     setActiveSection(section);
   };
 
@@ -466,7 +551,7 @@ export default function TycoonClicker() {
           rewardApplied = true;
         } else if (rewardId === 'money_rain') {
           const bonusMoney = 10000;
-          setGameState(prev => ({
+          setGameState((prev: ExtendedGameState) => ({
             ...prev,
             balance: prev.balance + bonusMoney
           }));
@@ -481,7 +566,7 @@ export default function TycoonClicker() {
           rewardMessage = 'Time Warp: x2 passive income speed for 2 minutes!';
           rewardApplied = true;
         } else if (rewardId === 'reset_mega') {
-          setGameState(prev => ({
+          setGameState((prev: ExtendedGameState) => ({
             ...prev,
             rewardCooldowns: {
               ...prev.rewardCooldowns,
@@ -491,7 +576,7 @@ export default function TycoonClicker() {
           rewardMessage = 'Mega Multiplier cooldown reset!';
           rewardApplied = true;
         } else if (rewardId === 'reset_golden') {
-          setGameState(prev => ({
+          setGameState((prev: ExtendedGameState) => ({
             ...prev,
             rewardCooldowns: {
               ...prev.rewardCooldowns,
@@ -501,7 +586,7 @@ export default function TycoonClicker() {
           rewardMessage = 'Golden Touch cooldown reset!';
           rewardApplied = true;
         } else if (rewardId === 'reset_time') {
-          setGameState(prev => ({
+          setGameState((prev: ExtendedGameState) => ({
             ...prev,
             rewardCooldowns: {
               ...prev.rewardCooldowns,
@@ -511,7 +596,7 @@ export default function TycoonClicker() {
           rewardMessage = 'Time Warp cooldown reset!';
           rewardApplied = true;
         } else if (rewardId === 'reset_all') {
-          setGameState(prev => ({
+          setGameState((prev: ExtendedGameState) => ({
             ...prev,
             rewardCooldowns: {}
           }));
@@ -519,7 +604,7 @@ export default function TycoonClicker() {
           rewardApplied = true;
         } else if (rewardId === 'booster_reset') {
           // Сброс всех активных бустеров и их кулдаунов
-          setGameState(prev => ({
+          setGameState((prev: ExtendedGameState) => ({
             ...prev,
             activeBoosters: {},
             // Сбрасываем кулдауны всех бустеров
@@ -540,7 +625,7 @@ export default function TycoonClicker() {
           // Отмена последнего действия - возврат 50% последней покупки
           if (gameState.balance > 100) {
             const refundAmount = Math.floor(gameState.balance * 0.1); // 10% от текущего баланса как "возврат"
-            setGameState(prev => ({
+            setGameState((prev: ExtendedGameState) => ({
               ...prev,
               balance: prev.balance + refundAmount
             }));
@@ -556,17 +641,17 @@ export default function TycoonClicker() {
           if (confirmed) {
             setGameState({
               balance: 0,
-              xp: 0,
-              level: 1,
-              maxXp: 1000,
               clickValue: 1,
-              passiveIncome: 0,
-              totalClicks: 0,
-              investments: {},
+              level: 1,
+              xp: 0,
+              maxXp: 1000,
               achievements: [],
-              rewardCooldowns: {},
               activeBoosters: {},
-              businesses: {}
+              rewardCooldowns: {},
+              investments: {},
+              isPremium: gameState.isPremium,
+              premiumType: gameState.premiumType,
+              premiumExpiry: gameState.premiumExpiry
             });
             rewardMessage = 'Game progress has been reset!';
             rewardApplied = true;
@@ -579,7 +664,7 @@ export default function TycoonClicker() {
         if (rewardApplied) {
           // Устанавливаем кулдаун для награды (для всех пользователей, кроме сброса кулдауна)
           if (!rewardId.startsWith('reset_')) {
-            setGameState(prev => ({
+            setGameState((prev: ExtendedGameState) => ({
               ...prev,
               rewardCooldowns: {
                 ...prev.rewardCooldowns,
@@ -623,24 +708,23 @@ export default function TycoonClicker() {
     
     // Специальная обработка для booster_reset
     if (purchaseType === 'booster_reset') {
-      console.log('🔄 Processing booster_reset - special handler');
-      // Сброс всех активных бустеров и их кулдаунов
-      setGameState(prev => ({
-        ...prev,
-        activeBoosters: {},
-        // Сбрасываем кулдауны всех бустеров, но устанавливаем кулдаун для самого booster_reset
-        rewardCooldowns: {
-          ...prev.rewardCooldowns,
-          mega_multiplier: 0,
-          golden_touch: 0,
-          time_warp: 0,
-          auto_clicker: 0,
-          money_rain: 0,
-          income_boost: 0,
-          undo_action: 0,
-          booster_reset: Date.now() // Устанавливаем кулдаун на 10 минут для booster_reset
-        }
-      }));
+      console.log('🔄 Processing booster_reset - special handler');        // Сброс всех активных бустеров и их кулдаунов
+        setGameState((prev: ExtendedGameState) => ({
+          ...prev,
+          activeBoosters: {},
+          // Сбрасываем кулдауны всех бустеров, но устанавливаем кулдаун для самого booster_reset
+          rewardCooldowns: {
+            ...prev.rewardCooldowns,
+            mega_multiplier: 0,
+            golden_touch: 0,
+            time_warp: 0,
+            auto_clicker: 0,
+            money_rain: 0,
+            income_boost: 0,
+            undo_action: 0,
+            booster_reset: Date.now() // Устанавливаем кулдаун на 10 минут для booster_reset
+          }
+        }));
       
       // Очищаем локальное хранилище бустеров
       localStorage.removeItem('tycoon-boosters');
@@ -666,7 +750,7 @@ export default function TycoonClicker() {
     // Валютные пакеты
     if (purchaseType.startsWith('currency_')) {
       if (value) {
-        setGameState(prev => ({
+        setGameState((prev: ExtendedGameState) => ({
           ...prev,
           balance: prev.balance + value
         }));
@@ -716,84 +800,37 @@ export default function TycoonClicker() {
       addTransaction({
         type: 'investment',
         amount: 0,
-        description: `Активирован бустер: ${boosterName}`,
+        description: `Активирован бустер: ${gameState.boosterName || 'Неизвестный бустер'}`,
         source: 'store_purchase'
       });
     }
 
     // Премиум покупки
     else if (purchaseType === 'remove_ads' || purchaseType === 'premium_full' || purchaseType === 'premium_weekly' || purchaseType === 'premium_lifetime') {
-      let message = '';
-      let premiumType: 'weekly' | 'lifetime' = 'lifetime';
-      let expiry: number | 'lifetime' = 'lifetime';
-      if (purchaseType === 'premium_weekly') {
-        message = 'Premium activated for 7 days! Ads removed, exclusive features unlocked!';
-        premiumType = 'weekly';
-        // Покупка через IAP сервис
-        const result = await inAppPurchaseService.purchasePremium('weekly');
-        expiry = result.expiry || (Date.now() + 7 * 24 * 60 * 60 * 1000);
-      } else {
-        message = 'Premium activated FOREVER! All ads removed, premium dashboard unlocked!';
-        premiumType = 'lifetime';
-        await inAppPurchaseService.purchasePremium('lifetime');
-        expiry = 'lifetime';
-      }
+      console.log(`🔄 Redirecting to premium payment page for: ${purchaseType}`);
       
-      // Обновляем локальное состояние
-      setIsPremium(true);
-      localStorage.setItem('premium-status', 'true');
-      localStorage.setItem('premium-type', premiumType);
+      // Сохраняем тип премиума, который пользователь хочет купить
+      localStorage.setItem('premium-pending-type', purchaseType);
       
-      // Сохраняем покупку в Firebase (облачное хранилище)
-      if (user) {
-        const purchaseData = {
-          type: premiumType,
-          transactionId: `web_${Date.now()}_${user.uid}`,
-          purchaseDate: new Date().toISOString(),
-          platform: 'web' as const,
-          price: premiumType === 'weekly' ? 4.99 : 14.99,
-          currency: 'USD'
-        };
-        
-        FirebaseGameService.savePurchase(user.uid, purchaseData).catch(error => {
-          console.error('Failed to save purchase to cloud:', error);
-        });
-        
-        localStorage.setItem('premium-purchase-date', purchaseData.purchaseDate);
-        localStorage.setItem('premium-transaction-id', purchaseData.transactionId);
-        console.log(`☁️ Premium ${premiumType} purchase saved to cloud`);
-      }
+      // Отслеживаем событие начала покупки премиума
+      trackAllAnalytics({
+        name: AnalyticsEvents.PREMIUM_PURCHASE_STARTED,
+        params: {
+          purchaseType: purchaseType,
+          source: 'in_game_store'
+        }
+      });
       
-      // Форсируем обновление состояния игры
-      setGameState(prev => ({
-        ...prev,
-        isPremium: true,
-        premiumType: premiumType,
-        premiumExpiry: premiumType === 'weekly' ? Date.now() + (7 * 24 * 60 * 60 * 1000) : undefined
-      }));
-      
-      console.log(`✅ Premium ${premiumType} successfully activated!`);
-      
+      // Добавляем уведомление
       addNotification({
-        type: 'success',
-        title: '👑 Premium Activated!',
-        message: message,
-        duration: 8000
-      });
-
-      addTransaction({
-        type: 'investment',
-        amount: 0,
-        description: purchaseType === 'premium_weekly' ? 'Weekly Premium ($4.99)' : 
-                    purchaseType === 'premium_lifetime' ? 'Lifetime Premium ($14.99)' :
-                    purchaseType === 'premium_full' ? 'Premium Package' : 'Remove Ads',
-        source: 'store_purchase'
+        type: 'info',
+        title: '💳 Переход к оплате',
+        message: 'Вы будете перенаправлены на страницу оплаты',
+        duration: 3000
       });
       
-      // Принудительно обновляем компоненты рекламы
-      window.dispatchEvent(new CustomEvent('premiumStatusChanged'));
-      
-      console.log('🎉 Premium status activated - ads should now be hidden!');
+      // Перенаправляем на страницу оплаты премиума
+      setLocation('/premium-payment');
     }
 
 
@@ -817,7 +854,7 @@ export default function TycoonClicker() {
         rewardApplied = true;
       } else if (purchaseType === 'money_rain') {
         const bonusMoney = 10000;
-        setGameState(prev => ({
+        setGameState((prev: ExtendedGameState) => ({
           ...prev,
           balance: prev.balance + bonusMoney
         }));
@@ -834,7 +871,7 @@ export default function TycoonClicker() {
       } else if (purchaseType === 'undo_action') {
         if (gameState.balance > 100) {
           const refundAmount = Math.floor(gameState.balance * 0.1);
-          setGameState(prev => ({
+          setGameState((prev: ExtendedGameState) => ({
             ...prev,
             balance: prev.balance + refundAmount
           }));
@@ -851,8 +888,8 @@ export default function TycoonClicker() {
             balance: 0,
             clickValue: 1,
             level: 1,
-            experience: 0,
-            experienceToNext: 100,
+            xp: 0,
+            maxXp: 1000,
             achievements: [],
             activeBoosters: {},
             rewardCooldowns: {},
@@ -870,7 +907,7 @@ export default function TycoonClicker() {
       } else if (purchaseType === 'booster_reset') {
         console.log('🔄 Processing booster_reset in handlePurchase');
         // Сброс всех активных бустеров и их кулдаунов
-        setGameState(prev => ({
+        setGameState((prev: ExtendedGameState) => ({
           ...prev,
           activeBoosters: {},
           // Сбрасываем кулдауны всех бустеров
@@ -898,8 +935,8 @@ export default function TycoonClicker() {
           try {
             const restoreResult = await FirebaseGameService.restorePurchases(user.uid);
             if (restoreResult.success) {
-              setIsPremium(true);
-              setGameState(prev => ({
+              // Premium status is now handled by usePremiumStatus hook
+              setGameState((prev: ExtendedGameState) => ({
                 ...prev,
                 isPremium: true,
                 premiumType: restoreResult.type,
@@ -929,7 +966,7 @@ export default function TycoonClicker() {
       if (rewardApplied) {
         // Устанавливаем кулдаун для награды (для всех пользователей, кроме сброса кулдауна)
         if (!purchaseType.startsWith('reset_')) {
-          setGameState(prev => ({
+          setGameState((prev: ExtendedGameState) => ({
             ...prev,
             rewardCooldowns: {
               ...prev.rewardCooldowns,
@@ -961,7 +998,7 @@ export default function TycoonClicker() {
   // Casino functions
   const handleUpdateBalance = (newBalance: number) => {
     // Обновляем баланс в состоянии игры
-    setGameState((prev: any) => {
+    setGameState((prev: ExtendedGameState) => {
       const newState = { ...prev, balance: newBalance };
       
       // Force save balance changes from casino
@@ -978,182 +1015,122 @@ export default function TycoonClicker() {
   // Trading functions - special logic for trading section
   const handleBuyAsset = (assetId: string, quantity: number = 1) => {
     console.log('Asset purchase:', assetId, 'quantity:', quantity);
-    
-    // Determine price for each asset
     let price = 0;
-    // Main assets
-    if (assetId === 'apple') {
-      price = 195; // Apple base price
-    } else if (assetId === 'tesla') {
-      price = 248; // Tesla base price  
-    } else if (assetId === 'btc-separate') {
-      price = 67500; // Bitcoin base price
-    } else if (assetId === 'eth-separate') {
-      price = 3450; // Ethereum base price
-    } 
-    // Акции
-    else if (assetId === 'msft') {
-      price = 420; // Microsoft base price
-    } else if (assetId === 'googl') {
-      price = 165; // Google base price
-    } else if (assetId === 'amzn') {
-      price = 180; // Amazon base price
-    } else if (assetId === 'nvda') {
-      price = 875; // Nvidia base price
-    } else if (assetId === 'jpm') {
-      price = 190; // JP Morgan base price
-    } else if (assetId === 'brk') {
-      price = 545000; // Berkshire base price
-    } else if (assetId === 'ko') {
-      price = 68; // Coca-Cola base price
-    } else if (assetId === 'pg') {
-      price = 156; // P&G base price
-    } else if (assetId === 'jnj') {
-      price = 155; // Johnson & Johnson base price
+    let assetName = assetId;
+    if (TRADING_ASSETS.some((a: any) => a.id === assetId)) {
+      price = prices[assetId] || getTradingAssetPrice(assetId, undefined);
+      const assetObj = TRADING_ASSETS.find((a: any) => a.id === assetId);
+      if (assetObj) assetName = assetObj.name;
+    } else {
+      assetName = assetNames[assetId] || assetId;
+      if (assetId === 'apple') price = 195;
+      else if (assetId === 'tesla') price = 248;
+      else if (assetId === 'btc-separate') price = 67500;
+      else if (assetId === 'eth-separate') price = 3450;
+      else if (assetId === 'msft') price = 420;
+      else if (assetId === 'googl') price = 165;
+      else if (assetId === 'amzn') price = 180;
+      else if (assetId === 'nvda') price = 875;
+      else if (assetId === 'jpm') price = 190;
+      else if (assetId === 'brk') price = 545000;
+      else if (assetId === 'ko') price = 68;
+      else if (assetId === 'pg') price = 156;
+      else if (assetId === 'jnj') price = 155;
+      else if (assetId === 'oil') price = 73;
+      else if (assetId === 'gold') price = 2045;
+      else if (assetId === 'silver') price = 26;
+      else if (assetId === 'platinum') price = 950;
+      else if (assetId === 'uranium') price = 2500000;
     }
-    // Commodities
-    else if (assetId === 'oil') {
-      price = 73; // Oil base price
-    } else if (assetId === 'gold') {
-      price = 2045; // Gold base price
-    } else if (assetId === 'silver') {
-      price = 26; // Silver base price
-    } else if (assetId === 'platinum') {
-      price = 950; // Platinum base price
-    } else if (assetId === 'uranium') {
-      price = 2500000; // Uranium base price
-    }
-    
-    // Используем quickBuyAsset для корректного обновления состояния
-    if (price > 0 && gameState.balance >= price) {
-      quickBuyAsset(assetId, price);
-      
-      // Добавляем транзакцию в историю
-      const assetNames: Record<string, string> = {
-        'apple': 'Tiple Technologies',
-        'tesla': 'Desla Motors',
-        'btc-separate': 'Bitcoin',
-        'eth-separate': 'Ethereum',
-        'ko': 'Coca-Cola',
-        'pg': 'Procter & Gamble',
-        'jnj': 'Johnson & Johnson',
-        'oil': 'Crude Oil',
-        'gold': 'Gold',
-        'silver': 'Silver',
-        'platinum': 'Platinum',
-        'uranium': 'Uranium'
-      };
-      
+    if (price > 0 && gameState.balance >= price * quantity) {
+      for (let i = 0; i < quantity; i++) {
+        quickBuyAsset(assetId, price);
+      }
       addTransaction({
         type: 'investment',
-        amount: -price,
-        description: `Bought stock ${assetNames[assetId] || assetId}`,
-        source: 'Trading'
+        amount: -price * quantity,
+        description: `Bought stock ${assetName}`,
+        source: 'Trading',
+        details: {
+          id: assetId,
+          name: assetName,
+          price: price,
+          quantity: quantity,
+          operationType: 'buy',
+          date: new Date().toISOString()
+        }
       });
-      
-      // Track investment in Vercel Analytics
-      trackInvestment(assetId, price);
-      
-      console.log('✅ Purchase successful:', assetId, 'price:', price);
+      trackInvestment(assetId, price * quantity);
+      console.log('✅ Purchase successful:', assetId, 'price:', price, 'qty:', quantity);
     } else {
-      console.log('❌ Insufficient funds for purchase:', assetId, 'need:', price, 'have:', gameState.balance);
+      console.log('❌ Insufficient funds for purchase:', assetId, 'need:', price * quantity, 'have:', gameState.balance);
     }
   };
 
   const handleSellAsset = (assetId: string, quantity: number = 1) => {
     console.log('handleSellAsset вызвана с:', assetId, quantity);
-    
-    // Определяем цену для каждого актива (текущая рыночная цена)
     let price = 0;
-    // Основные активы
-    if (assetId === 'apple') {
-      price = 195; // Apple price
-    } else if (assetId === 'tesla') {
-      price = 248; // Tesla price
-    } else if (assetId === 'btc-separate') {
-      price = 67500; // Bitcoin price
-    } else if (assetId === 'eth-separate') {
-      price = 3450; // Ethereum price
-    } 
-    // Акции
-    else if (assetId === 'msft') {
-      price = 420; // Microsoft price
-    } else if (assetId === 'googl') {
-      price = 165; // Google price
-    } else if (assetId === 'amzn') {
-      price = 180; // Amazon price
-    } else if (assetId === 'nvda') {
-      price = 875; // Nvidia price
-    } else if (assetId === 'jpm') {
-      price = 190; // JP Morgan price
-    } else if (assetId === 'brk') {
-      price = 545000; // Berkshire price
-    } else if (assetId === 'ko') {
-      price = 68; // Coca-Cola price
-    } else if (assetId === 'pg') {
-      price = 156; // P&G price
-    } else if (assetId === 'jnj') {
-      price = 155; // Johnson & Johnson price
+    let assetName = assetId;
+    if (TRADING_ASSETS.some((a: any) => a.id === assetId)) {
+      price = prices[assetId] || getTradingAssetPrice(assetId, undefined);
+      const assetObj = TRADING_ASSETS.find((a: any) => a.id === assetId);
+      if (assetObj) assetName = assetObj.name;
+    } else {
+      assetName = assetNames[assetId] || assetId;
+      if (assetId === 'apple') price = 195;
+      else if (assetId === 'tesla') price = 248;
+      else if (assetId === 'btc-separate') price = 67500;
+      else if (assetId === 'eth-separate') price = 3450;
+      else if (assetId === 'msft') price = 420;
+      else if (assetId === 'googl') price = 165;
+      else if (assetId === 'amzn') price = 180;
+      else if (assetId === 'nvda') price = 875;
+      else if (assetId === 'jpm') price = 190;
+      else if (assetId === 'brk') price = 545000;
+      else if (assetId === 'ko') price = 68;
+      else if (assetId === 'pg') price = 156;
+      else if (assetId === 'jnj') price = 155;
+      else if (assetId === 'oil') price = 73;
+      else if (assetId === 'gold') price = 2045;
+      else if (assetId === 'silver') price = 26;
+      else if (assetId === 'platinum') price = 950;
+      else if (assetId === 'uranium') price = 2500000;
     }
-    // Commodities
-    else if (assetId === 'oil') {
-      price = 73; // Oil price
-    } else if (assetId === 'gold') {
-      price = 2045; // Gold price
-    } else if (assetId === 'silver') {
-      price = 26; // Silver price
-    } else if (assetId === 'platinum') {
-      price = 950; // Platinum price
-    } else if (assetId === 'uranium') {
-      price = 2500000; // Uranium price
-    }
-    
-    // Используем quickSellAsset для корректного обновления состояния
     const currentQuantity = gameState.investments[assetId] || 0;
-    
-    // Проверяем, есть ли у игрока активы для продажи
-    if (currentQuantity > 0 && price > 0) {
-      quickSellAsset(assetId, price);
-      
-      // Добавляем транзакцию в историю
-      const assetNames: Record<string, string> = {
-        'apple': 'Tiple Technologies',
-        'tesla': 'Desla Motors',
-        'btc-separate': 'Bitcoin',
-        'eth-separate': 'Ethereum',
-        'ko': 'Coca-Cola',
-        'pg': 'Procter & Gamble',
-        'jnj': 'Johnson & Johnson',
-        'oil': 'Crude Oil',
-        'gold': 'Gold',
-        'silver': 'Silver',
-        'platinum': 'Platinum',
-        'uranium': 'Uranium'
-      };
-      
+    if (currentQuantity >= quantity && price > 0) {
+      for (let i = 0; i < quantity; i++) {
+        quickSellAsset(assetId, price);
+      }
       addTransaction({
         type: 'investment',
-        amount: price,
-        description: `Sold stock ${assetNames[assetId] || assetId}`,
-        source: 'Trading'
+        amount: price * quantity,
+        description: `Sold stock ${assetName}`,
+        source: 'Trading',
+        details: {
+          id: assetId,
+          name: assetName,
+          price: price,
+          quantity: quantity,
+          operationType: 'sell',
+          date: new Date().toISOString()
+        }
       });
-      
-      console.log('✅ Sale successful:', assetId, 'price:', price);
+      console.log('✅ Sale successful:', assetId, 'price:', price, 'qty:', quantity);
     } else {
       console.log('❌ Insufficient assets for sale:', assetId, 'have:', currentQuantity, 'need:', quantity);
     }
   };
 
   const getAssetsByCategory = (category: string) => {
-    return ASSETS.filter(asset => asset.category === category);
+    return ASSETS.filter((asset: any) => asset.category === category);
   };
 
   const getCompletedAchievements = () => {
-    return ACHIEVEMENTS.filter(achievement => gameState.achievements.includes(achievement.id));
+    return ACHIEVEMENTS.filter((achievement: Achievement) => gameState.achievements.includes(achievement.id));
   };
 
   const getPendingAchievements = () => {
-    return ACHIEVEMENTS.filter(achievement => !gameState.achievements.includes(achievement.id));
+    return ACHIEVEMENTS.filter((achievement: Achievement) => !gameState.achievements.includes(achievement.id));
   };
 
   const renderHomeSection = () => (
@@ -1178,7 +1155,7 @@ export default function TycoonClicker() {
       <Card className="glass-card border-white/10 p-4">
         <h3 className="text-xl font-bold mb-4">{t('recentAchievements')}</h3>
         <div className="space-y-3">
-          {getCompletedAchievements().slice(-3).map(achievement => (
+          {getCompletedAchievements().slice(-3).map((achievement: Achievement) => (
             <div key={achievement.id} className="flex items-center gap-3 p-3 glass-card rounded-lg border-2 border-[hsl(var(--tropico-gold))]">
               <i className={`${achievement.icon} text-[hsl(var(--tropico-gold))] text-xl`}></i>
               <div>
@@ -1201,7 +1178,7 @@ export default function TycoonClicker() {
   const renderInvestmentSection = (category: string) => (
     <div className="space-y-4">
       <h2 className="text-2xl font-bold mb-6 flex items-center">
-        <i className={`${ASSETS.find(a => a.category === category)?.icon || 'fas fa-chart-line'} text-[hsl(var(--tropico-teal))] mr-3`}></i>
+        <i className={`${ASSETS.find((a: any) => a.category === category)?.icon || 'fas fa-chart-line'} text-[hsl(var(--tropico-teal))] mr-3`}></i>
         {category === 'crypto' && 'Cryptocurrency'}
         {category === 'stocks' && 'Stock Market'}
         {category === 'realestate' && 'Real Estate'}
@@ -1212,7 +1189,7 @@ export default function TycoonClicker() {
         {category === 'space' && 'Space Technology'}
       </h2>
       
-      {getAssetsByCategory(category).map(asset => {
+      {getAssetsByCategory(category).map((asset: any) => {
         const quantity = gameState.investments[asset.id] || 0;
         const price = Math.floor(asset.basePrice * Math.pow(asset.multiplier, quantity));
         const canAfford = gameState.balance >= price;
@@ -1247,7 +1224,7 @@ export default function TycoonClicker() {
       <h2 className="text-2xl font-bold mb-6">Достижения</h2>
       
       {/* Completed Achievements */}
-      {getCompletedAchievements().map(achievement => (
+      {getCompletedAchievements().map((achievement: Achievement) => (
         <Card key={achievement.id} className="glass-card border-2 border-[hsl(var(--tropico-gold))] p-4">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-full gold-gradient flex items-center justify-center">
@@ -1266,18 +1243,18 @@ export default function TycoonClicker() {
       ))}
       
       {/* Pending Achievements */}
-      {getPendingAchievements().map(achievement => {
+      {getPendingAchievements().map((achievement: Achievement) => {
         let progress = 0;
         let current = 0;
         
-        switch (achievement.type) {
+        switch (achievement.requirement.type) {
           case 'balance':
             current = gameState.balance;
-            progress = Math.min((current / achievement.requirement) * 100, 100);
+            progress = Math.min((current / achievement.requirement.value) * 100, 100);
             break;
-          case 'clicks':
+          case 'totalClicks':
             current = gameState.totalClicks;
-            progress = Math.min((current / achievement.requirement) * 100, 100);
+            progress = Math.min((current / achievement.requirement.value) * 100, 100);
             break;
         }
         
@@ -1292,7 +1269,7 @@ export default function TycoonClicker() {
                 <p className="text-gray-400 text-sm">{achievement.description}</p>
                 <Progress value={progress} className="h-2 mt-2" />
                 <div className="text-xs text-gray-500 mt-1">
-                  {formatNumber(current)} / {formatNumber(achievement.requirement)}
+                  {formatNumber(current)} / {formatNumber(achievement.requirement.value)}
                 </div>
               </div>
               <div className="text-gray-400">
@@ -1332,8 +1309,8 @@ export default function TycoonClicker() {
     };
 
     const handleLanguageChange = (newLanguage: Language) => {
-      setCurrentLanguage(newLanguage);
       localStorage.setItem('wealth-tycoon-language', newLanguage);
+      window.location.reload();
     };
 
     return (
@@ -1360,8 +1337,8 @@ export default function TycoonClicker() {
                       : 'bg-white/5 hover:bg-white/10'
                   }`}
                 >
-                  <span className="text-2xl">{getLanguageFlag(lang)}</span>
-                  <span className="font-medium">{getLanguageName(lang)}</span>
+                  <span className="text-2xl">{getLanguageFlag(lang as Language)}</span>
+                  <span className="font-medium">{getLanguageName(lang as Language)}</span>
                 </button>
               ))}
             </div>
@@ -1424,7 +1401,7 @@ export default function TycoonClicker() {
               <h3 className="font-semibold text-lg">Конфиденциальность</h3>
             </div>
             <button
-              onClick={() => setIsConsentManagerOpen(true)}
+              onClick={() => setConsentModalOpen(true)}
               className="w-full flex items-center justify-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-all"
             >
               <Settings className="w-4 h-4" />
@@ -1457,6 +1434,9 @@ export default function TycoonClicker() {
             gameState={gameState} 
             onBuyAsset={handleBuyAsset}
             onSellAsset={handleSellAsset}
+            prices={prices}
+            setPrices={setPrices}
+            priceChanges={priceChanges}
           />
         );
       case 'business':
@@ -1496,12 +1476,12 @@ export default function TycoonClicker() {
     total += clickIncome;
     
     // 2. Доход от классических инвестиций
-    ASSETS.forEach(asset => {
+    ASSETS.forEach((asset: any) => {
       const quantity = gameState.investments[asset.id] || 0;
       total += (asset.baseIncome * quantity);
     });
     
-    // 3. Доход от торговых акций (Apple, Tesla)
+    // 3. Доход от трейдинговых акций (Apple, Tesla)
     const appleShares = gameState.investments['apple'] || 0;
     const teslaShares = gameState.investments['tesla'] || 0;
     
@@ -1543,22 +1523,53 @@ export default function TycoonClicker() {
     return total;
   };
 
+  const finalIsPremium = isPremium || gameState.isPremium;
+
   // Если настройки открыты, показываем только их
-  if (settingsOpen) {
-    return createPortal(
-      <div className="fixed inset-0 z-[99999] bg-gradient-to-br from-gray-900 via-gray-800 to-black">
-        <SettingsModal 
-          isOpen={settingsOpen} 
-          onClose={() => setSettingsOpen(false)}
-        />
-      </div>,
-      document.body
-    );
+  return (
+    <AppLayout isPremium={finalIsPremium}>
+      {/* ТЕСТ: навигация в самом верху */}
+      <NewNavigationBar 
+        activeSection={activeSection}
+        onSectionChange={handleSectionChange}
+        isPremium={finalIsPremium}
+      />
+      <div className={settingsOpen ? 'pointer-events-none select-none opacity-40' : ''}>
+        <div className="relative">
+          <StatsHeader 
+            gameState={gameState} 
+            realPassiveIncome={Math.round(calculateRealPassiveIncome() * 10) / 10} 
+            onSettingsClick={() => setSettingsOpen(true)}
+            isCollapsed={activeSection !== 'home'}
+            transactions={transactions}
+            onExpandHome={handleExpandHome}
+          />
+        </div>
+        <main className="px-4 py-6">{renderContent()}</main>
+      </div>
+      {/* Модалка настроек всегда в DOM */}
+      <SettingsModal isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} />
+    </AppLayout>
+  );
+
+  // --- Исправление: функция handleAuth для AuthModal ---
+  const handleAuth = (userId: string, method: string) => {
+    setShowAuth(false);
+    // Можно добавить аналитику по методу входа
+    // После авторизации можно автоматически продолжить игру
+  };
+
+  useEffect(() => {
+    setShowAuth(!user?.uid);
+  }, [user]);
+
+  if (showAuth) {
+    return <AuthModal onAuth={handleAuth} />;
   }
 
   return (
-    <div className="min-h-screen pb-[180px] md:pb-[200px] lg:pb-[220px] relative">
-      <div className={settingsOpen ? 'hidden' : ''}>
+    <AppLayout isPremium={finalIsPremium}>
+      <div className={settingsOpen ? 'pointer-events-none select-none opacity-40' : ''}>
         
         <div className="relative">
           <StatsHeader 
@@ -1571,14 +1582,33 @@ export default function TycoonClicker() {
           />
         </div>
         
-
-        
-        <main className="px-4 py-6">
+        <main>
+          {/* Отладочная информация - только в development */}
+          {import.meta.env.DEV && (
+            <div style={{
+              position: 'fixed',
+              top: '10px',
+              right: '10px',
+              background: '#000',
+              color: '#fff',
+              padding: '10px',
+              borderRadius: '5px',
+              zIndex: 999999,
+              fontSize: '12px',
+              border: '2px solid #ff0000'
+            }}>
+              <div>isPremium: {isPremium ? 'YES' : 'NO'}</div>
+              <div>gameState.isPremium: {gameState.isPremium ? 'YES' : 'NO'}</div>
+              <div>finalIsPremium: {finalIsPremium ? 'YES' : 'NO'}</div>
+              <div>activeSection: {activeSection}</div>
+            </div>
+          )}
+          
           {renderContent()}
         </main>
         
         {/* Межстраничная реклама при смене уровня */}
-        {!gameState.isPremium && (
+        {!finalIsPremium && (
           <AdMobBanner 
             adType="interstitial"
             trigger={gameState.level.toString()}
@@ -1586,69 +1616,18 @@ export default function TycoonClicker() {
         )}
       </div>
 
-      {/* Ultra-Premium AdMob System - Maximum Safety Margins */}
-      {(
-        (!isPremium && !gameState.isPremium) ||
-        (isPremium || gameState.isPremium)
-      ) && (
-        <div className="fixed bottom-0 left-0 right-0 z-[40] bg-gradient-to-r from-slate-900 to-slate-800 border-t border-purple-500/30 shadow-2xl">
-          {/* Top safety buffer */}
-          <div className="h-[30px] md:h-[40px] lg:h-[50px] bg-gradient-to-b from-transparent via-slate-900/10 to-slate-900/20" />
-          {/* Main Ad Container - Enhanced Size (всегда резервируем место) */}
-          <div className="h-[70px] md:h-[80px] lg:h-[90px] flex items-center justify-center">
-            {(!isPremium && !gameState.isPremium) ? (
-              import.meta.env.PROD ? (
-                <ins
-                  className="adsbygoogle"
-                  style={{
-                    display: 'block',
-                    width: '100%',
-                    height: '70px',
-                    maxHeight: '90px',
-                    backgroundColor: 'transparent',
-                    minHeight: '50px'
-                  }}
-                  data-ad-client={import.meta.env.VITE_ADMOB_APP_ID}
-                  data-ad-slot={import.meta.env.VITE_ADMOB_BANNER_ID}
-                  data-ad-format="auto"
-                  data-full-width-responsive="true"
-                  data-ad-layout-key="-fb+5w+4e-db+86"
-                  ref={(el) => {
-                    if (el && !(el as any)._adsInitialized) {
-                      (el as any)._adsInitialized = true;
-                      setTimeout(() => {
-                        try {
-                          if ((window as any).adsbygoogle && import.meta.env.VITE_ADMOB_APP_ID) {
-                            ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
-                          }
-                        } catch (error) {
-                          console.log('Ultra-Premium AdMob system ready for deployment');
-                        }
-                      }, 300);
-                    }
-                  }}
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-slate-400 text-sm">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-3 h-3 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full animate-pulse"></div>
-                    <span className="opacity-70 font-medium">Ultra-Premium AdMob Ready</span>
-                    <div className="w-3 h-3 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full animate-pulse"></div>
-                  </div>
-                </div>
-              )
-            ) : null}
-          </div>
-          {/* Навигация */}
-          <NavigationBar 
-            activeSection={activeSection}
-            onSectionChange={handleSectionChange}
-            isPremium={isPremium}
-          />
-          {/* Bottom safety buffer */}
-          <div className="h-[20px] md:h-[30px] lg:h-[40px] bg-gradient-to-t from-transparent via-slate-900/10 to-slate-900/20" />
-        </div>
-      )}
+      {/* Новая система навигации */}
+      <NewNavigationBar 
+        activeSection={activeSection}
+        onSectionChange={handleSectionChange}
+        isPremium={finalIsPremium}
+      />
+      
+      {/* Новый рекламный баннер внизу */}
+      <AdBannerBottom isPremium={finalIsPremium} />
+
+      {/* Модальное окно настроек */}
+      <SettingsModal isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} />
 
       {/* Consent Manager */}
       <ConsentManager
@@ -1656,40 +1635,6 @@ export default function TycoonClicker() {
         onClose={() => setConsentModalOpen(false)}
         onConsentUpdate={handleConsentUpdate}
       />
-
-      {/* Модальное окно GDPR согласий */}
-      <ConsentManager 
-        isOpen={consentModalOpen}
-        onClose={() => setConsentModalOpen(false)}
-        onConsentUpdate={(consents) => {
-          adjustService.setEnabled(consents.analytics);
-          adMobService.setConsentStatus(consents.advertising);
-          console.log('Privacy settings updated:', consents);
-        }}
-      />
-
-      {/* Фиксированный баннер внизу экрана - скрыт для премиум пользователей */}
-      {!isPremium && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-r from-gray-900 to-slate-900 border-t border-gray-400/30">
-          <div className="h-[60px] flex items-center justify-center text-white text-sm">
-            <div className="flex items-center gap-3">
-              <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse"></div>
-              <span className="font-medium">Advertisement Space</span>
-              <div className="px-2 py-1 bg-white/10 rounded text-xs">AdSense</div>
-            </div>
-          </div>
-          
-          {/* Скрытый AdSense для будущего использования */}
-          <ins 
-            className="adsbygoogle"
-            style={{ display: 'none' }}
-            data-ad-client="ca-pub-4328087894770041"
-            data-ad-slot="5243095999"
-            data-ad-format="auto"
-            data-full-width-responsive="true"
-          />
-        </div>
-      )}
 
       {/* Achievement Celebration Overlay */}
       <AchievementCelebration 
@@ -1707,6 +1652,6 @@ export default function TycoonClicker() {
         playerLevel={gameState.level}
       />
 
-    </div>
+    </AppLayout>
   );
 }

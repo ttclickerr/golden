@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Clear LocalStorage</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f0f0f0;
+    }
+    h1 {
+      color: #333;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    #result {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #e9e9e9;
+      border-radius: 4px;
+    }
+    .key-list {
+      margin-top: 20px;
+      font-size: 14px;
+    }
+    .key-item {
+      margin-bottom: 5px;
+      padding: 5px;
+      background-color: #fff;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Очистка LocalStorage</h1>
+  
+  <button id="clearAll">Очистить ВСЕ данные</button>
+  <button id="clearGame">Очистить только игровые данные</button>
+  <button id="clearPremium">Очистить только данные премиума</button>
+  
+  <div id="result"></div>
+  
+  <div class="key-list">
+    <h3>Текущие данные в LocalStorage:</h3>
+    <div id="keys"></div>
+  </div>
+
+  <script>
+    // Функция для отображения текущих ключей
+    function displayKeys() {
+      const keysDiv = document.getElementById('keys');
+      keysDiv.innerHTML = '';
+      
+      if (localStorage.length === 0) {
+        keysDiv.innerHTML = '<p>LocalStorage пуст</p>';
+        return;
+      }
+      
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        const value = localStorage.getItem(key);
+        
+        const keyItem = document.createElement('div');
+        keyItem.className = 'key-item';
+        keyItem.innerHTML = `<strong>${key}</strong>: ${value.length > 50 ? value.substring(0, 50) + '...' : value}`;
+        
+        keysDiv.appendChild(keyItem);
+      }
+    }
+    
+    // Кнопка очистки всех данных
+    document.getElementById('clearAll').addEventListener('click', function() {
+      localStorage.clear();
+      document.getElementById('result').innerHTML = '<strong>Все данные успешно удалены!</strong> Перезагрузите страницу игры.';
+      displayKeys();
+    });
+    
+    // Кнопка очистки только игровых данных
+    document.getElementById('clearGame').addEventListener('click', function() {
+      const gameKeys = [
+        'tycoon-game-state',
+        'tycoon-boosters',
+        'tycoon-stats',
+        'tycoon-transactions',
+        'completedAchievements',
+        'last-save',
+        'investmentsOwned',
+        'level',
+        'balance',
+        'first_open_tracked'
+      ];
+      
+      gameKeys.forEach(key => {
+        localStorage.removeItem(key);
+      });
+      
+      document.getElementById('result').innerHTML = '<strong>Игровые данные успешно удалены!</strong> Перезагрузите страницу игры.';
+      displayKeys();
+    });
+    
+    // Кнопка очистки только данных премиума
+    document.getElementById('clearPremium').addEventListener('click', function() {
+      const premiumKeys = [
+        'premium-status',
+        'premium-type',
+        'premium-expiry',
+        'premium-test-mode',
+        'premium-pending-type',
+        'premium-purchase-date',
+        'premium-transaction-id'
+      ];
+      
+      premiumKeys.forEach(key => {
+        localStorage.removeItem(key);
+      });
+      
+      document.getElementById('result').innerHTML = '<strong>Данные премиума успешно удалены!</strong> Перезагрузите страницу игры.';
+      displayKeys();
+    });
+    
+    // Отображаем текущие ключи при загрузке страницы
+    displayKeys();
+  </script>
+</body>
+</html>

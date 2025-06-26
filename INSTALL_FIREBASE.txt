@@ -1,0 +1,6 @@
+# Установка firebase для стабильной сборки
+npm install firebase --save
+
+git add package.json package-lock.json
+git commit -m "fix: add firebase dependency for build stability"
+git push
