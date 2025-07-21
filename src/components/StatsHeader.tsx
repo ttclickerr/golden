@@ -15,7 +15,7 @@ function generateRecentTransactions(gameState: ExtendedGameState): Transaction[]
   const transactions: Transaction[] = [];
   const baseTime = Date.now();
   
-  // Add investment transactions with static timestamps
+  // Add investment transactions with static timestamps (5 minutes apart)
   Object.entries(gameState.investments || {}).forEach(([assetId, quantity], index) => {
     if (quantity > 0) {
       transactions.push({
