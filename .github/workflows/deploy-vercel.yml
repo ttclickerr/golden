@@ -1,14 +1,17 @@
-name: Deploy to Vercel
+name: Deploy to Vercel (Manual Only)
 
 on:
-  push:
-    branches:
-      - main
-      - master
-  pull_request:
-    branches:
-      - main
-      - master
+  # Автоматический деплой отключен
+  # push:
+  #   branches:
+  #     - main
+  #     - master
+  # pull_request:
+  #   branches:
+  #     - main
+  #     - master
+  
+  # Только ручной запуск деплоя
   workflow_dispatch:
 
 jobs:
