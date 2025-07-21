@@ -110,8 +110,7 @@ export function SimpleTradingSection({ gameState, onBuyAsset, onSellAsset, price
   };
 
   const getAssetQuantity = (assetId: string): number => {
-    const gameAssetId = getGameAssetId(assetId);
-    return gameState.investments[gameAssetId] || 0;
+    return gameState.investments[assetId] || 0;
   };
 
   const canAfford = (asset: TradingAsset): boolean => {
@@ -123,49 +122,24 @@ export function SimpleTradingSection({ gameState, onBuyAsset, onSellAsset, price
   };
 
   // Соответствие торговых активов и игровых активов
-  const getGameAssetId = (tradingAssetId: string): string => {
-    const mapping: Record<string, string> = {
-      // Основные активы
-      'aapl': 'apple',
-      'tsla': 'tesla', 
-      'btc': 'btc-separate',
-      'eth': 'eth-separate',
-      
-      // Новые активы - ID торгового актива совпадает с ID в investments
-      'msft': 'msft',
-      'googl': 'googl',
-      'amzn': 'amzn',
-      'nvda': 'nvda',
-      'jpm': 'jpm',
-      'brk': 'brk',
-      'ko': 'ko',
-      'pg': 'pg',
-      'jnj': 'jnj',
-      'pfz': 'pfz',
-      'oil': 'oil',
-      'gold': 'gold',
-      'silver': 'silver',
-      'platinum': 'platinum',
-      'uranium': 'uranium',
-      'magdoladns': 'magdoladns',
-      'burger_queen': 'burger_queen',
-      'biocat': 'biocat',
-      'krc': 'krc',
-      'chtz': 'chtz'
-    };
-    return mapping[tradingAssetId] || tradingAssetId;
-  };
+
 
   const handleQuickBuy = (asset: TradingAsset) => {
-    const gameAssetId = getGameAssetId(asset.id);
-    // Используем стандартную функцию покупки
-    onBuyAsset(gameAssetId, 1);
+    // Получаем актуальную цену актива для корректной покупки
+    const currentPrice = getCurrentPrice(asset.id);
+    console.log(`🚀 Quick buy: ${asset.symbol} at $${currentPrice}`);
+    
+    // Проверяем достаточность средств
+    if (gameState.balance >= currentPrice) {
+      // Вызываем покупку с правильными параметрами
+      onBuyAsset(asset.id, 1); // quantity = 1
+    } else {
+      console.log(`❌ Insufficient funds: need $${currentPrice}, have $${gameState.balance}`);
+    }
   };
 
   const handleQuickSell = (asset: TradingAsset) => {
-    const gameAssetId = getGameAssetId(asset.id);
-    // Используем стандартную функцию продажи
-    onSellAsset(gameAssetId, 1);
+    onSellAsset(asset.id, 1);
   };
 
   const openChartModal = (asset: TradingAsset) => {
@@ -175,33 +149,14 @@ export function SimpleTradingSection({ gameState, onBuyAsset, onSellAsset, price
 
   const getTotalPortfolioValue = (): number => {
     let total = 0;
-    
     // Проходим по всем инвестициям игрока
     Object.entries(gameState.investments).forEach(([assetId, quantity]) => {
       const qty = Number(quantity);
       if (qty > 0) {
-        // Базовые цены для торговых активов
-        const assetPrices: Record<string, number> = {
-          'apple': getCurrentPrice('aapl'),
-          'tesla': getCurrentPrice('tsla'), 
-          'btc-separate': getCurrentPrice('btc'),
-          'eth-separate': getCurrentPrice('eth'),
-          'ko': getCurrentPrice('ko'),
-          'oil': getCurrentPrice('oil'),
-          'gold': getCurrentPrice('gold'),
-          'silver': getCurrentPrice('silver'),
-          'platinum': getCurrentPrice('platinum'),
-          'uranium': getCurrentPrice('uranium')
-        };
-        if (assetPrices[assetId]) {
-          total += qty * assetPrices[assetId];
-        } else {
-          if (assetId === 'ko') total += qty * 68;
-          else if (assetId === 'oil') total += qty * 73;
-        }
+        // Берём цену только из getCurrentPrice для трейдинговых id
+        total += qty * getCurrentPrice(assetId);
       }
     });
-    
     return total;
   };
 
@@ -437,7 +392,12 @@ export function SimpleTradingSection({ gameState, onBuyAsset, onSellAsset, price
                               onClick={(e) => {
                                 e.stopPropagation();
                                 if (tradingAsset) {
-                                  onBuyAsset(tradingAsset.id, getCurrentPrice(tradingAsset.id));
+                                  // Используем правильную логику как в handleQuickBuy
+                                  const currentPrice = getCurrentPrice(tradingAsset.id);
+                                  if (gameState.balance >= currentPrice) {
+                                    onBuyAsset(tradingAsset.id, 1); // quantity = 1
+                                    console.log(`🚀 Holdings quick buy: ${tradingAsset.symbol} at $${currentPrice}`);
+                                  }
                                 }
                               }}
                               className="w-7 h-6 bg-green-500 text-white rounded text-sm font-bold hover:bg-green-600 transition-all transform hover:scale-105 shadow-lg flex items-center justify-center"
