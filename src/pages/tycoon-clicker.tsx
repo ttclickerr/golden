@@ -1551,7 +1551,9 @@ export default function TycoonClicker() {
         };
 
         const handleLanguageChange = (newLanguage: Language) => {
-            localStorage.setItem('wealth-tycoon-language', newLanguage);
+            // Используем setLanguage из useTranslationStore для правильного сохранения
+            const { setLanguage } = useTranslationStore.getState();
+            setLanguage(newLanguage);
             window.location.reload();
         };
 
