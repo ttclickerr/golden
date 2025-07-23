@@ -1,4 +1,5 @@
 {
+  "portfolioValueTitle": "Стоимость портфеля",
   "app": {
     "title": "Tycoon Clicker"
   },
@@ -33,7 +34,10 @@
     "clickValue": "Сила клика",
     "buildings": "Купленных зданий",
     "upgrades": "Купленных улучшений",
-    "playTime": "Время игры"
+    "playTime": "Время игры",
+    "level": "Level",
+    "achievements": "Achievements",
+    "noAchievements": "No achievements unlocked yet. Keep playing!"
   },
   "settings": {
     "title": "Настройки",
@@ -61,22 +65,85 @@
     "privacyPolicy": "Политика конфиденциальности",
     "github": "GitHub"
   },
+  "tradingAvailableBalance": "Доступный баланс",
+  "tradingTodaysPL": "Сегодняшний P&L",
+  "tradingHoldings": "Активы",
+  "tradingNoHoldings": "Нет активов",
+  "tradingPriceLabel": "Цена:",
+  "tradingOwnedLabel": "В собственности:",
+  "tradingValueLabel": "Стоимость:",
+  "tradingVolumeLabel": "Объем:",
+  "tradingAboutLabel": "О компании",
+  "tradingYouOwn": "У вас есть",
+  "tradingMarketCap": "Рыночная капитализация",
+  "portfolioMonthlyIncomeLabel": "Месячный доход",
+  "portfolioPortfolioMetrics": "МЕТРИКИ ПОРТФЕЛЯ",
+  "portfolioActiveInvestments": "Активные инвестиции",
+  "portfolioBusinessVentures": "Бизнес-предприятия",
+  "portfolioEfficiencyLabel": "ЭФФЕКТИВНОСТЬ",
+  "portfolioAvgInvestmentSize": "Средний размер инвестиции",
+  "portfolioDiversificationLabel": "Диверсификация",
+  "trading": {
+    "availableBalance": "Доступный баланс",
+    "todaysPL": "Сегодняшний P&L",
+    "holdings": "Активы",
+    "noHoldings": "Нет активов",
+    "priceLabel": "Цена:",
+    "ownedLabel": "В собственности:",
+    "valueLabel": "Стоимость:",
+    "volumeLabel": "Объем:",
+    "aboutLabel": "О компании",
+    "youOwn": "У вас есть",
+    "marketCap": "Рыночная капитализация"
+  },
+  "portfolio": {
+    "monthlyIncomeLabel": "Месячный доход",
+    "portfolioMetrics": "МЕТРИКИ ПОРТФЕЛЯ",
+    "activeInvestments": "Активные инвестиции",
+    "businessVentures": "Бизнес-предприятия",
+    "efficiencyLabel": "ЭФФЕКТИВНОСТЬ",
+    "avgInvestmentSize": "Средний размер инвестиции",
+    "diversificationLabel": "Диверсификация"
+  },
   "achievements": {
     "title": "Достижения",
-    "description": "Выполняйте задания и получайте награды",
-    "list": {
-      "clicker_novice": {
-        "name": "Работяга",
-        "description": "Сделайте 100 кликов"
-      },
-      "builder_apprentice": {
-        "name": "Подмастерье строителя",
-        "description": "Постройте 1 здание"
-      },
-      "investor_beginner": {
-        "name": "Начинающий инвестор",
-        "description": "Заработайте 1000 денег"
-      }
-    }
+    "description": "Выполняйте задания и получайте награды"
+  },
+  "realEstate": {
+    "title": "Real Estate",
+    "description": "Invest in properties to generate long-term wealth",
+    "owned": "Your Properties",
+    "available": "Available Properties",
+    "noneAvailable": "No properties available at the moment",
+    "income": "Income",
+    "appreciation": "Appreciation",
+    "maintenance": "Maintenance"
+  },
+  "vehicles": {
+    "title": "Vehicles",
+    "description": "Purchase vehicles to enhance your status and mobility",
+    "owned": "Your Vehicles",
+    "available": "Available Vehicles",
+    "noneAvailable": "No vehicles available at the moment"
+  },
+  "stocks": {
+    "title": "Stock Market",
+    "description": "Invest in company stocks to grow your wealth",
+    "owned": "Your Portfolio",
+    "available": "Available Stocks",
+    "buy": "Buy",
+    "sell": "Sell",
+    "priceUpdating": "Prices updating in: {{time}}s"
+  },
+  "boosts": {
+    "activateIncomeBoost": "Boost Income (Watch Ad)",
+    "activateClickBoost": "Boost Click Value (Watch Ad)",
+    "incomeBoostActive": "Income Boost: {{time}}",
+    "clickBoostActive": "Click Boost: {{time}}",
+    "incomeBoostActivated": "Income boosted by {{multiplier}}x for {{duration}} minutes!",
+    "clickBoostActivated": "Click value boosted by {{multiplier}}x for {{duration}} minutes!",
+    "incomeBoostEnded": "Income boost has ended",
+    "clickBoostEnded": "Click value boost has ended",
+    "adNotAvailable": "Ad not available, please try again later"
   }
 }

@@ -1,69 +1,52 @@
 {
-  "portfolioValueTitle": "Valeur du portefeuille",
+  "wealth": {
+    "name": "Niveau de richesse {n}",
+    "description": "Accumulez ${value} de richesse totale"
+  },
+  "clicks": {
+    "name": "Maître des clics {n}",
+    "description": "Faites {value} clics au total"
+  },
+  "business": {
+    "name": "Magnat des affaires {n}",
+    "description": "Possédez {value} entreprises"
+  },
+  "investment": {
+    "name": "Gourou des investissements {n}",
+    "description": "Avoir ${value} dans le portefeuille d'investissement"
+  },
+  "passive": {
+    "name": "Revenu passif {n}",
+    "description": "Gagnez ${value}/sec de revenu passif"
+  },
+  "special": {
+    "name": "Légende {n}",
+    "description": "Atteignez le niveau de joueur {value}"
+  },
+  "portfolioValueTitle": "Portfolio Value",
   "app": {
     "title": "Tycoon Clicker"
   },
   "game": {
-    "click": "Cliquer",
-    "clickValue": "Valeur du clic",
-    "currency": "Argent",
-    "passive": "Revenu par seconde"
+    "click": "Click",
+    "clickValue": "Click Value",
+    "currency": "Money",
+    "passive": "Income per second"
   },
   "buildings": {
-    "title": "Bâtiments",
-    "description": "Acheter des bâtiments pour générer des revenus passifs",
-    "owned": "Possédé"
+    "title": "Buildings",
+    "description": "Purchase buildings to generate passive income",
+    "owned": "Owned"
   },
   "upgrades": {
-    "title": "Améliorations",
-    "description": "Achetez des améliorations pour augmenter votre productivité",
-    "purchased": "Améliorations achetées",
-    "available": "Améliorations disponibles",
-    "noneAvailable": "Aucune amélioration disponible pour le moment. Continuez à gagner de l'argent !",
-    "owned": "Possédé",
-    "effectClickMultiplier": "Valeur de clic {{value}}",
-    "effectPassiveMultiplier": "Revenu passif {{value}}"
-  },
-  "stats": {
-    "title": "Statistiques",
-    "description": "Suivez votre progression",
-    "clicks": "Clics totaux",
-    "totalCurrency": "Total gagné",
-    "currentCurrency": "Solde actuel",
-    "passiveIncome": "Revenu passif",
-    "clickValue": "Valeur du clic",
-    "buildings": "Bâtiments possédés",
-    "upgrades": "Améliorations possédées",
-    "playTime": "Temps de jeu",
-    "level": "Level",
-    "achievements": "Achievements",
-    "noAchievements": "No achievements unlocked yet. Keep playing!"
-  },
-  "settings": {
-    "title": "Paramètres",
-    "preferences": "Préférences",
-    "resetGame": "Réinitialiser le jeu",
-    "help": "Aide et support",
-    "general": "Général",
-    "audio": "Audio",
-    "language": "Langue",
-    "selectLanguage": "Sélectionner la langue",
-    "darkMode": "Mode sombre",
-    "darkModeDescription": "Activer le thème de couleur sombre",
-    "lightMode": "Mode clair",
-    "soundEffects": "Effets sonores",
-    "soundEffectsDescription": "Activer les effets sonores pendant le jeu",
-    "music": "Musique de fond",
-    "musicDescription": "Jouer de la musique de fond pendant le jeu",
-    "mute": "Muet",
-    "unmute": "Activer le son",
-    "confirmReset": "Êtes-vous sûr de vouloir réinitialiser votre progression ? Cette action ne peut pas être annulée !",
-    "resetSuccess": "Réinitialisation du jeu réussie !"
-  },
-  "footer": {
-    "termsOfService": "Conditions d'utilisation",
-    "privacyPolicy": "Politique de confidentialité",
-    "github": "GitHub"
+    "title": "Upgrades",
+    "description": "Purchase upgrades to increase your productivity",
+    "purchased": "Purchased Upgrades",
+    "available": "Available Upgrades",
+    "noneAvailable": "No upgrades available yet. Keep earning money!",
+    "owned": "Owned",
+    "effectClickMultiplier": "Click value {{value}}",
+    "effectPassiveMultiplier": "Passive income {{value}}"
   },
   "realEstate": {
     "title": "Real Estate",
@@ -101,6 +84,47 @@
     "incomeBoostEnded": "Income boost has ended",
     "clickBoostEnded": "Click value boost has ended",
     "adNotAvailable": "Ad not available, please try again later"
+  },
+  "stats": {
+    "title": "Statistics",
+    "description": "Track your progress",
+    "clicks": "Total Clicks",
+    "totalCurrency": "Total Earned",
+    "currentCurrency": "Current Balance",
+    "passiveIncome": "Passive Income",
+    "clickValue": "Click Value",
+    "buildings": "Buildings Owned",
+    "upgrades": "Upgrades Owned",
+    "playTime": "Play Time",
+    "level": "Level",
+    "achievements": "Achievements",
+    "noAchievements": "No achievements unlocked yet. Keep playing!"
+  },
+  "settings": {
+    "title": "Settings",
+    "preferences": "Preferences",
+    "resetGame": "Reset Game",
+    "help": "Help & Support",
+    "general": "General",
+    "audio": "Audio",
+    "language": "Language",
+    "selectLanguage": "Select language",
+    "darkMode": "Dark Mode",
+    "darkModeDescription": "Enable dark color theme",
+    "lightMode": "Light Mode",
+    "soundEffects": "Sound Effects",
+    "soundEffectsDescription": "Enable sound effects during gameplay",
+    "music": "Background Music",
+    "musicDescription": "Play background music during gameplay",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "confirmReset": "Are you sure you want to reset your progress? This cannot be undone!",
+    "resetSuccess": "Game reset successful!"
+  },
+  "footer": {
+    "termsOfService": "Terms of Service",
+    "privacyPolicy": "Privacy Policy",
+    "github": "GitHub"
   },
   "tradingAvailableBalance": "Available Balance",
   "tradingTodaysPL": "Today's P&L",

@@ -33,7 +33,10 @@
     "clickValue": "点击价值",
     "buildings": "拥有的建筑",
     "upgrades": "拥有的升级",
-    "playTime": "游戏时间"
+    "playTime": "游戏时间",
+    "level": "Level",
+    "achievements": "Achievements",
+    "noAchievements": "No achievements unlocked yet. Keep playing!"
   },
   "settings": {
     "title": "设置",
@@ -60,5 +63,83 @@
     "termsOfService": "服务条款",
     "privacyPolicy": "隐私政策",
     "github": "GitHub"
+  },
+  "portfolioValueTitle": "Portfolio Value",
+  "realEstate": {
+    "title": "Real Estate",
+    "description": "Invest in properties to generate long-term wealth",
+    "owned": "Your Properties",
+    "available": "Available Properties",
+    "noneAvailable": "No properties available at the moment",
+    "income": "Income",
+    "appreciation": "Appreciation",
+    "maintenance": "Maintenance"
+  },
+  "vehicles": {
+    "title": "Vehicles",
+    "description": "Purchase vehicles to enhance your status and mobility",
+    "owned": "Your Vehicles",
+    "available": "Available Vehicles",
+    "noneAvailable": "No vehicles available at the moment"
+  },
+  "stocks": {
+    "title": "Stock Market",
+    "description": "Invest in company stocks to grow your wealth",
+    "owned": "Your Portfolio",
+    "available": "Available Stocks",
+    "buy": "Buy",
+    "sell": "Sell",
+    "priceUpdating": "Prices updating in: {{time}}s"
+  },
+  "boosts": {
+    "activateIncomeBoost": "Boost Income (Watch Ad)",
+    "activateClickBoost": "Boost Click Value (Watch Ad)",
+    "incomeBoostActive": "Income Boost: {{time}}",
+    "clickBoostActive": "Click Boost: {{time}}",
+    "incomeBoostActivated": "Income boosted by {{multiplier}}x for {{duration}} minutes!",
+    "clickBoostActivated": "Click value boosted by {{multiplier}}x for {{duration}} minutes!",
+    "incomeBoostEnded": "Income boost has ended",
+    "clickBoostEnded": "Click value boost has ended",
+    "adNotAvailable": "Ad not available, please try again later"
+  },
+  "tradingAvailableBalance": "投资组合概况",
+  "tradingTodaysPL": "Today's P&L",
+  "tradingHoldings": "Holdings",
+  "tradingNoHoldings": "No holdings",
+  "tradingPriceLabel": "价格:",
+  "tradingOwnedLabel": "拥有:",
+  "tradingValueLabel": "价值:",
+  "tradingVolumeLabel": "交易量:",
+  "tradingAboutLabel": "关于",
+  "tradingYouOwn": "You Own",
+  "tradingMarketCap": "市值",
+  "portfolioMonthlyIncomeLabel": "月收入",
+  "portfolioPortfolioMetrics": "投资组合指标",
+  "portfolioActiveInvestments": "活跃投资",
+  "portfolioBusinessVentures": "商业投资",
+  "portfolioEfficiencyLabel": "效率",
+  "portfolioAvgInvestmentSize": "平均投资规模",
+  "portfolioDiversificationLabel": "多样化",
+  "trading": {
+    "availableBalance": "Available Balance",
+    "todaysPL": "Today's P&L",
+    "holdings": "Holdings",
+    "noHoldings": "No holdings",
+    "priceLabel": "Price:",
+    "ownedLabel": "Owned:",
+    "valueLabel": "Value:",
+    "volumeLabel": "Volume:",
+    "aboutLabel": "About",
+    "youOwn": "You Own",
+    "marketCap": "Market Cap"
+  },
+  "portfolio": {
+    "monthlyIncomeLabel": "Monthly Income",
+    "portfolioMetrics": "PORTFOLIO METRICS",
+    "activeInvestments": "Active Investments",
+    "businessVentures": "Business Ventures",
+    "efficiencyLabel": "EFFICIENCY",
+    "avgInvestmentSize": "Avg Investment Size",
+    "diversificationLabel": "Diversification"
   }
 }

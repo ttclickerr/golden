@@ -1,14 +1,13 @@
-import { useState, useEffect } from "react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { SimpleChart } from "@/components/SimpleChart";
 import { PersistentChart } from "@/components/PersistentChart";
-import { formatNumber } from "@/lib/gameData";
-import { TrendingUp, TrendingDown, Zap, X } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { assetNames } from "@/lib/assetNames";
+import { formatNumber } from "@/lib/gameData";
+import { useTranslation } from '@/lib/i18n';
 import { TRADING_ASSETS } from "@/lib/tradingAssets";
+import { TrendingDown, TrendingUp, X } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface SimpleTradingSectionProps {
   gameState: any;
@@ -27,6 +26,8 @@ const formatPrice = (price: number): string => {
 };
 
 export function SimpleTradingSection({ gameState, onBuyAsset, onSellAsset, prices, setPrices, priceChanges }: SimpleTradingSectionProps) {
+  const { t } = useTranslation();
+  
   // Фильтруем активы по уровню игрока
   const availableAssets = TRADING_ASSETS.filter(asset => asset.requiredLevel <= gameState.level);
   // console.log('🎮 Уровень игрока:', gameState.level, 'Доступно активов:', availableAssets.length);
@@ -220,14 +221,14 @@ export function SimpleTradingSection({ gameState, onBuyAsset, onSellAsset, price
     <div className="space-y-6 pb-20">
       {/* Portfolio Overview */}
       <Card className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-sm border border-slate-700/50 p-4">
-        <h2 className="text-lg font-bold mb-3 text-amber-400">Portfolio Overview</h2>
+        <h2 className="text-lg font-bold mb-3 text-amber-400">{t('portfolioOverview')}</h2>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <div className="text-xs text-gray-400">Portfolio Value</div>
+            <div className="text-xs text-gray-400">{t('portfolioValueTitle')}</div>
             <div className="text-xl font-bold">${formatNumber(getTotalPortfolioValue())}</div>
           </div>
           <div>
-            <div className="text-xs text-gray-400">Available Balance</div>
+            <div className="text-xs text-gray-400">{t('tradingAvailableBalance')}</div>
             <div className="text-xl font-bold text-green-400">${gameState.balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
           </div>
         </div>
@@ -236,7 +237,7 @@ export function SimpleTradingSection({ gameState, onBuyAsset, onSellAsset, price
           return (
             <div className="mt-3 pt-3 border-t border-white/10">
               <div className="flex justify-between items-center mb-3">
-                <span className="text-xs text-gray-400">Today's P&L</span>
+                <span className="text-xs text-gray-400">{t('tradingTodaysPL')}</span>
                 {getTotalPortfolioValue() > 0 ? (
                   <div className={`flex items-center text-sm ${gainLoss.isPositive ? 'text-green-400' : 'text-red-400'}`}>
                     {gainLoss.isPositive ? <TrendingUp className="w-4 h-4 mr-1" /> : <TrendingDown className="w-4 h-4 mr-1" />}
@@ -249,7 +250,7 @@ export function SimpleTradingSection({ gameState, onBuyAsset, onSellAsset, price
               
               {/* Holdings Section */}
               <div className="space-y-2">
-                <div className="text-xs text-gray-400 mb-2">Holdings</div>
+                <div className="text-xs text-gray-400 mb-2">{t('tradingHoldings')}</div>
                 {(() => {
                   // Создаем мапинг всех торговых активов (по возрастанию цены)
                   const assetMapping = [
@@ -310,7 +311,7 @@ export function SimpleTradingSection({ gameState, onBuyAsset, onSellAsset, price
                   
                   if (holdings.length === 0) {
                     return (
-                      <div className="text-xs text-gray-500 italic">No holdings</div>
+                      <div className="text-xs text-gray-500 italic">{t('tradingNoHoldings')}</div>
                     );
                   }
                   
@@ -450,11 +451,11 @@ export function SimpleTradingSection({ gameState, onBuyAsset, onSellAsset, price
               
               <div className="space-y-1">
                 <div className="flex justify-between items-center">
-                  <span className="text-xs text-gray-400">Price:</span>
+                  <span className="text-xs text-gray-400">{t('tradingPriceLabel')}</span>
                   <span className="font-bold">${formatPrice(currentPrice)}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-xs text-gray-400">Owned:</span>
+                  <span className="text-xs text-gray-400">{t('tradingOwnedLabel')}</span>
                   <div className="flex items-center space-x-2">
                     <button
                       onClick={(e) => {
@@ -480,11 +481,11 @@ export function SimpleTradingSection({ gameState, onBuyAsset, onSellAsset, price
                   </div>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-xs text-gray-400">Value:</span>
+                  <span className="text-xs text-gray-400">{t('tradingValueLabel')}</span>
                   <span className="text-xs font-semibold text-green-400">${formatPrice(quantity * currentPrice)}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-xs text-gray-400">Volume:</span>
+                  <span className="text-xs text-gray-400">{t('tradingVolumeLabel')}</span>
                   <span className="text-xs">${formatNumber(currentPrice * Math.random() * 1000000 + 500000)}</span>
                 </div>
                 {!canAfford(asset) && (
@@ -563,7 +564,7 @@ export function SimpleTradingSection({ gameState, onBuyAsset, onSellAsset, price
 
             {/* Asset Description */}
             <div className="bg-white/5 rounded-lg p-3 mb-4">
-              <div className="text-xs text-gray-400 mb-2">About</div>
+              <div className="text-xs text-gray-400 mb-2">{t('tradingAboutLabel')}</div>
               <div className="text-sm text-gray-200">
                 {modalAsset.id === 'ko' && "Coca-Cola Company - Global beverage leader with strong dividend history and worldwide presence."}
                 {modalAsset.id === 'tsla' && "Tesla Inc - Electric vehicle pioneer revolutionizing sustainable transportation and energy storage."}
@@ -591,7 +592,7 @@ export function SimpleTradingSection({ gameState, onBuyAsset, onSellAsset, price
             {/* Holdings Info - Compact */}
             <div className="flex justify-between items-center mb-4 text-sm">
               <div>
-                <div className="text-gray-400">You Own</div>
+                <div className="text-gray-400">{t('tradingYouOwn')}</div>
                 <div className="font-bold text-white">{formatNumber(getAssetQuantity(modalAsset.id))} shares</div>
               </div>
               <div className="text-right">
@@ -638,11 +639,11 @@ export function SimpleTradingSection({ gameState, onBuyAsset, onSellAsset, price
             {/* Market Info - Very Compact */}
             <div className="grid grid-cols-2 gap-2 text-xs border-t border-white/10 pt-3">
               <div>
-                <div className="text-gray-400">Market Cap</div>
+                <div className="text-gray-400">{t('tradingMarketCap')}</div>
                 <div className="text-white font-bold">${formatNumber(getCurrentPrice(modalAsset.id) * 1000)}M</div>
               </div>
               <div>
-                <div className="text-gray-400">Volume</div>
+                <div className="text-gray-400">{t('tradingVolumeLabel')}</div>
                 <div className="text-white font-bold">${formatNumber(getCurrentPrice(modalAsset.id) * 50)}K</div>
               </div>
             </div>

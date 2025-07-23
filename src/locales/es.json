@@ -1,4 +1,5 @@
 {
+  "portfolioValueTitle": "Valor del portafolio",
   "app": {
     "title": "Tycoon Clicker"
   },
@@ -33,7 +34,10 @@
     "clickValue": "Valor de clic",
     "buildings": "Edificios poseídos",
     "upgrades": "Mejoras poseídas",
-    "playTime": "Tiempo de juego"
+    "playTime": "Tiempo de juego",
+    "level": "Level",
+    "achievements": "Achievements",
+    "noAchievements": "No achievements unlocked yet. Keep playing!"
   },
   "settings": {
     "title": "Ajustes",
@@ -60,5 +64,82 @@
     "termsOfService": "Términos de servicio",
     "privacyPolicy": "Política de privacidad",
     "github": "GitHub"
+  },
+  "realEstate": {
+    "title": "Real Estate",
+    "description": "Invest in properties to generate long-term wealth",
+    "owned": "Your Properties",
+    "available": "Available Properties",
+    "noneAvailable": "No properties available at the moment",
+    "income": "Income",
+    "appreciation": "Appreciation",
+    "maintenance": "Maintenance"
+  },
+  "vehicles": {
+    "title": "Vehicles",
+    "description": "Purchase vehicles to enhance your status and mobility",
+    "owned": "Your Vehicles",
+    "available": "Available Vehicles",
+    "noneAvailable": "No vehicles available at the moment"
+  },
+  "stocks": {
+    "title": "Stock Market",
+    "description": "Invest in company stocks to grow your wealth",
+    "owned": "Your Portfolio",
+    "available": "Available Stocks",
+    "buy": "Buy",
+    "sell": "Sell",
+    "priceUpdating": "Prices updating in: {{time}}s"
+  },
+  "boosts": {
+    "activateIncomeBoost": "Boost Income (Watch Ad)",
+    "activateClickBoost": "Boost Click Value (Watch Ad)",
+    "incomeBoostActive": "Income Boost: {{time}}",
+    "clickBoostActive": "Click Boost: {{time}}",
+    "incomeBoostActivated": "Income boosted by {{multiplier}}x for {{duration}} minutes!",
+    "clickBoostActivated": "Click value boosted by {{multiplier}}x for {{duration}} minutes!",
+    "incomeBoostEnded": "Income boost has ended",
+    "clickBoostEnded": "Click value boost has ended",
+    "adNotAvailable": "Ad not available, please try again later"
+  },
+  "tradingAvailableBalance": "Available Balance",
+  "tradingTodaysPL": "Today's P&L",
+  "tradingHoldings": "Holdings",
+  "tradingNoHoldings": "No holdings",
+  "tradingPriceLabel": "Price:",
+  "tradingOwnedLabel": "Owned:",
+  "tradingValueLabel": "Value:",
+  "tradingVolumeLabel": "Volume:",
+  "tradingAboutLabel": "About",
+  "tradingYouOwn": "You Own",
+  "tradingMarketCap": "Market Cap",
+  "portfolioMonthlyIncomeLabel": "Monthly Income",
+  "portfolioPortfolioMetrics": "PORTFOLIO METRICS",
+  "portfolioActiveInvestments": "Active Investments",
+  "portfolioBusinessVentures": "Business Ventures",
+  "portfolioEfficiencyLabel": "EFFICIENCY",
+  "portfolioAvgInvestmentSize": "Avg Investment Size",
+  "portfolioDiversificationLabel": "Diversification",
+  "trading": {
+    "availableBalance": "Available Balance",
+    "todaysPL": "Today's P&L",
+    "holdings": "Holdings",
+    "noHoldings": "No holdings",
+    "priceLabel": "Price:",
+    "ownedLabel": "Owned:",
+    "valueLabel": "Value:",
+    "volumeLabel": "Volume:",
+    "aboutLabel": "About",
+    "youOwn": "You Own",
+    "marketCap": "Market Cap"
+  },
+  "portfolio": {
+    "monthlyIncomeLabel": "Monthly Income",
+    "portfolioMetrics": "PORTFOLIO METRICS",
+    "activeInvestments": "Active Investments",
+    "businessVentures": "Business Ventures",
+    "efficiencyLabel": "EFFICIENCY",
+    "avgInvestmentSize": "Avg Investment Size",
+    "diversificationLabel": "Diversification"
   }
 }
